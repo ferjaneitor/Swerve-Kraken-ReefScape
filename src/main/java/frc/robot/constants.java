@@ -11,8 +11,8 @@ import edu.wpi.first.units.measure.MomentOfInertia;
 import edu.wpi.first.units.measure.Voltage;
      
     /** 
-    *<p>Autor:  Fernando Joel Cruz Briones</p>
-    * <p>Versión: 1.0</p>
+    * @author  Fernando Joel Cruz Briones
+    * @version 1.0
     */
 public class constants {
     
@@ -131,7 +131,8 @@ public class constants {
     
         /**
          * Radio de la rueda en pulgadas (convertido a objeto Distance).
-         */
+         */ 
+        
         public static final Distance kWheelRadius = Inches.of(2);
     
         /**
@@ -353,7 +354,21 @@ public class constants {
     
     public class ElevatorConstants {
     
-    
+        public static final double SproketDiameterInches = 2 ;
+        
+        public static final double KP = 0.5;
+        
+        public static final double KI = 0;
+        
+        public static final double KD = 0 ;
+        
+        public static final double OffSetMeters = 0.98;
+
+        public static final double TOLERANCE = 0.1;
+
+        public static final int Motor1ID = 0;
+
+        public static final int Motor2ID = 0;
         
     }
     
