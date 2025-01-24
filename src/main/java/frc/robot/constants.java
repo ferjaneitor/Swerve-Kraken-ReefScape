@@ -364,15 +364,24 @@ public class constants {
         
         public static final double OffSetMeters = 0.98;
 
-        public static final double TOLERANCE = 0.1;
+        public static final double TOLERANCE = 0.05;
 
         public static final int Motor1ID = 0;
 
         public static final int Motor2ID = 0;
+
+        public static final int ElevatorVelocity = 0;
         
     }
     
     public class CoralConstants{
+
+        public static final int motor1ID = 0;
+        public static final int motor2ID = 0;
+        public static final int pivotMotorID = 0;
+        public static final boolean twoMotorsIsActive = false;
+        public static final double pivotMotorVelocity = 0;
+        public static final double MotorsIntakeVelocity = 0;
 
         
 
