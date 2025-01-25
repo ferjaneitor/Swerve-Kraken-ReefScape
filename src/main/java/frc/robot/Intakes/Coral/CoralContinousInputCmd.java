@@ -1,4 +1,4 @@
-package frc.robot.Intake.Coral;
+package frc.robot.Intakes.Coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.CoralConstants;

@@ -352,7 +352,7 @@ public class constants {
     
     }    
     
-    public class ElevatorConstants {
+    public static final class ElevatorConstants {
     
         public static final double SproketDiameterInches = 2 ;
         
@@ -374,7 +374,7 @@ public class constants {
         
     }
     
-    public class CoralConstants{
+    public static final class CoralConstants{
 
         public static final int motor1ID = 0;
         public static final int motor2ID = 0;
@@ -387,13 +387,17 @@ public class constants {
 
     }
     
-    public class AlgaeConstants {
+    public static final class AlgaeConstants {
     
-    
+        public static final int motor1ID = 0;
+        public static final int pivotMotorID = 0;
+        public static final int motor2ID = 0;
+        public static final int pivotMotorVelocity = 0;
+        public static final int intakeVelocity = 0;
         
     }    
     
-    public class DeepCageConstants {
+    public static final class DeepCageConstants {
     
         
     }
@@ -415,5 +419,8 @@ public class constants {
 
         //La latura de la April Tag del Amp
         public static final double kTargetAmpHeight = 51.625; // Modiffy 58.375      
-    }
+    } 
+    
+    public static final double CoralAlgaeFinalVelocity = 0 ;
+    
 }

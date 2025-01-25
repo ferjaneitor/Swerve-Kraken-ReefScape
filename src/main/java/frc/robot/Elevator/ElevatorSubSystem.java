@@ -10,7 +10,7 @@ import frc.robot.constants.ElevatorConstants;
 
 /** 
 * @author  Fernando Joel Cruz Briones
-* @version 1.0
+* @version 1.1
 */
 
 public class ElevatorSubSystem extends SubsystemBase{
@@ -30,6 +30,9 @@ public class ElevatorSubSystem extends SubsystemBase{
         
         this.motor1PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
         this.motor2PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        
+        ResetEncoders();
+        
     }
     
     public void ResetEncoders (){

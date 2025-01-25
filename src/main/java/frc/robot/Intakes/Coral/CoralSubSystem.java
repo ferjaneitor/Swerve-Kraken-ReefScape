@@ -1,4 +1,4 @@
-package frc.robot.Intake.Coral;
+package frc.robot.Intakes.Coral;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
