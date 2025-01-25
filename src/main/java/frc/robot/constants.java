@@ -371,6 +371,8 @@ public class constants {
         public static final int Motor2ID = 0;
 
         public static final int ElevatorVelocity = 0;
+
+        public static final double GearRatio = 25;
         
     }
     

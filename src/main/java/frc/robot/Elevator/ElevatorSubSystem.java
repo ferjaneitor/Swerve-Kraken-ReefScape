@@ -10,7 +10,7 @@ import frc.robot.constants.ElevatorConstants;
 
 /** 
 * @author  Fernando Joel Cruz Briones
-* @version 1.1
+* @version 1.2
 */
 
 public class ElevatorSubSystem extends SubsystemBase{
@@ -53,8 +53,8 @@ public class ElevatorSubSystem extends SubsystemBase{
         //Se divide entre 2 porque es la cantidad de niveles moviles que tiene el Elevador en cascada
         double DistanceMetersHalf = DistanceMetersWithOffSet/3;
 
-        //Dividimos la altura entre la circunferencia de la llanta para regresar todas las rotaciones
-        return DistanceMetersHalf/wheelCircumferenceMeters;
+        //Dividimos la altura entre la circunferencia de la llanta para regresar todas las rotaciones para despues multiplicarla por la reduccion
+        return (DistanceMetersHalf/wheelCircumferenceMeters) * ElevatorConstants.GearRatio;
     }  
     
     public void targetHeightFromRotations(double targetRotations){
