@@ -34,7 +34,7 @@ public class CoralContinousInputCmd extends Command {
     
     @Override
     public void end(boolean interrupted){
-        coralSubSystem.disableCoralIntake();
+        coralSubSystem.stopCoralIntake();
     }
     
     @Override

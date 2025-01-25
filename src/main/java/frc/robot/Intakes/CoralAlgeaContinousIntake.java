@@ -48,7 +48,7 @@ public class CoralAlgeaContinousIntake extends Command {
     public void end(boolean interrupted){
         
         algeaSubSystem.stopAlgaeIntake();
-        coralSubSystem.disableCoralIntake();
+        coralSubSystem.stopCoralIntake();
         
     }
     

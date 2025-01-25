@@ -401,6 +401,9 @@ public class constants {
     
     public static final class DeepCageConstants {
     
+        public static final int motor1ID = 0 ;
+        public static final int motor2ID = 0;
+        public static final int deepCageVelocity = 0;
         
     }
     

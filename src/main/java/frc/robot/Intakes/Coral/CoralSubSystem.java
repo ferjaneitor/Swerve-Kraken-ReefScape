@@ -44,20 +44,20 @@ public class CoralSubSystem extends SubsystemBase {
         pivotMotor.set(Velocity);
     }
 
-    public void disablePivot(){
+    public void stopPivot(){
         pivotMotor.set(0);
     }
     
-    public void disableCoralIntake(){
+    public void stopCoralIntake(){
         if (twoMotorsActive) {
             motor2.set(0);
         }
         motor1.set(0);
     }
     
-    public void disableAll() {
-        disableCoralIntake();
-        disablePivot();
+    public void stopAll() {
+        stopCoralIntake();
+        stopPivot();
     }
        
     
