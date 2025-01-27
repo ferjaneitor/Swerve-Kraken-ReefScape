@@ -103,7 +103,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      */
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    /** Swerve request to apply during robot-centric path following */
+    /**
+     * SwerveRequest que se utiliza para aplicar velocidades en el marco de referencia
+     * del robot (robot-centric). Específicamente se emplea al seguir trayectorias 
+     * donde los comandos de traslación y rotación se expresan desde la perspectiva
+     * del propio robot.
+     */
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
      /**
@@ -250,29 +255,46 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     @SuppressWarnings("unused")
+    /**
+     * Configura el {@code AutoBuilder} para la ejecución de trayectorias (PathPlanner).
+     * <p>
+     * - Obtiene la pose actual del robot y permite restablecerla al inicio de la ruta.
+     * - Aplica las velocidades y feedforwards al tren motriz en modo robot-centric,
+     *   utilizando {@link SwerveRequest.ApplyRobotSpeeds}.
+     * - Configura el controlador holonómico ({@code PPHolonomicDriveController})
+     *   con ganancias PID para traslación y rotación.
+     * - Determina si se debe invertir la ruta según la Alianza (Roja/Azul) reportada
+     *   por {@link DriverStation}.
+     * </p>
+     * <p>
+     * En caso de ocurrir un error al cargar la configuración de PathPlanner,
+     * se reporta un mensaje a la consola de DriverStation.
+     * </p>
+     */
     private void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
-                this::resetPose,         // Consumer for seeding pose against auto
-                () -> getState().Speeds, // Supplier of current robot speeds
-                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                () -> getState().Pose,   // Supplier de la pose actual del robot
+                this::resetPose,         // Consumer para restablecer la pose al inicio
+                () -> getState().Speeds, // Supplier de velocidades actuales del robot
+                
+                // Consumer de ChassisSpeeds y feedforwards para manejar el robot
                 (speeds, feedforwards) -> setControl(
                     m_pathApplyRobotSpeeds.withSpeeds(speeds)
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
                 new PPHolonomicDriveController(
-                    // PID constants for translation
+                    // Constantes PID para traslación
                     new PIDConstants(10, 0, 0),
-                    // PID constants for rotation
+                    // Constantes PID para rotación
                     new PIDConstants(7, 0, 0)
                 ),
                 config,
-                // Assume the path needs to be flipped for Red vs Blue, this is normally the case
+                // Supone que la ruta debe invertirse para la Alianza Roja
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
-                this // Subsystem for requirements
+                this // Subsystem para requerimientos
             );
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
@@ -361,11 +383,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
+     * Añade una medición de visión al filtro de Kalman, ajustando la estimación de la
+     * pose del robot conforme a la información de la cámara de visión, tomando en cuenta
+     * el ruido de medición.
+     * <p>
+     * El método recibe la pose del robot medida por visión ({@code visionRobotPoseMeters})
+     * y el instante de tiempo ({@code timestampSeconds}) en que se tomó la medición.
+     * Se encarga de convertir ese tiempo a la referencia interna con
+     * {@code Utils.fpgaToCurrentTime}.
+     * </p>
+     * @param visionRobotPoseMeters La pose estimada por la cámara de visión (en metros).
+     * @param timestampSeconds Momento en que se registró la medición, en segundos.
      */
     @Override
     public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds) {
@@ -373,17 +401,21 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
 
     /**
-     * Adds a vision measurement to the Kalman Filter. This will correct the odometry pose estimate
-     * while still accounting for measurement noise.
+     * Añade una medición de visión al filtro de Kalman, ajustando la estimación de la
+     * pose del robot conforme a la información de la cámara de visión y teniendo en
+     * cuenta desviaciones estándar específicas para esta medición.
      * <p>
-     * Note that the vision measurement standard deviations passed into this method
-     * will continue to apply to future measurements until a subsequent call to
-     * {@link #setVisionMeasurementStdDevs(Matrix)} or this method.
-     *
-     * @param visionRobotPoseMeters The pose of the robot as measured by the vision camera.
-     * @param timestampSeconds The timestamp of the vision measurement in seconds.
-     * @param visionMeasurementStdDevs Standard deviations of the vision pose measurement
-     *     in the form [x, y, theta]ᵀ, with units in meters and radians.
+     * La matriz {@code visionMeasurementStdDevs} representa la desviación estándar
+     * para x, y y theta ([x, y, theta]) expresadas en metros y radianes. Estos valores
+     * se aplicarán a mediciones futuras hasta que se vuelva a llamar a
+     * {@link #setVisionMeasurementStdDevs(Matrix)} o se llame nuevamente a este método
+     * con parámetros distintos.
+     * </p>
+     * @param visionRobotPoseMeters La pose estimada por la cámara de visión (en metros).
+     * @param timestampSeconds Momento en que se registró la medición, en segundos.
+     * @param visionMeasurementStdDevs Desviaciones estándar de la medición de visión
+     *                                 en el formato [x, y, theta], con x e y en metros
+     *                                 y theta en radianes.
      */
     @Override
     public void addVisionMeasurement(
