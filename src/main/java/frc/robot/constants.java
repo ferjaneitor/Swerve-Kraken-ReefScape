@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.Voltage;
      
     /** 
     * @author  Fernando Joel Cruz Briones
-    * @version 1.0
+    * @version 1.8
     */
 public class constants {
     
@@ -413,6 +413,14 @@ public class constants {
          * Número de etapas (stages) del elevador en tipo cascada.
          */
         public static final double ElevatorStages = 3;
+
+        public static final double L4 = 0;
+
+        public static final double L3 = 0;
+
+        public static final double L2 = 0;
+
+        public static final double L1 = 0;
     }
 
     /**
@@ -450,6 +458,14 @@ public class constants {
          * Velocidad de intake para los motores principales del mecanismo Coral.
          */
         public static final double MotorsIntakeVelocity = 0;
+
+        public static final double KP = 0.5;
+
+        public static final double KI = 0;
+
+        public static final double KD = 0;
+
+        public static final double gearRatio = 20;
     }
 
     /**

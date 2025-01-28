@@ -1,10 +1,13 @@
 package frc.robot.Intakes.Coral;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CoralConstants;
+import frc.robot.constants.ElevatorConstants;
 
 /**
  * @{@code CoralSubSystem} es el subsistema que controla el mecanismo de “Coral”,
@@ -32,7 +35,7 @@ import frc.robot.constants.CoralConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class CoralSubSystem extends SubsystemBase {
 
@@ -44,6 +47,12 @@ public class CoralSubSystem extends SubsystemBase {
 
     /** Motor que controla el pivote del mecanismo Coral. */
     private SparkMax pivotMotor;
+
+    // Encoder Relativo del motor que pivota el mecanismo del coral
+    private RelativeEncoder pivotmotorEncoder ;
+
+    //PID del motor que pivota el mecanismo del coral
+    private PIDController PivotpidController ;
 
     /**
      * Indica si el subsistema está configurado para usar dos motores de succión
@@ -69,6 +78,13 @@ public class CoralSubSystem extends SubsystemBase {
         }
 
         this.pivotMotor = new SparkMax(CoralConstants.pivotMotorID, MotorType.kBrushless);
+        
+        this.pivotmotorEncoder = pivotMotor.getEncoder();
+        
+        this.PivotpidController = new PIDController(CoralConstants.KP, CoralConstants.KI, CoralConstants.KD);
+        
+        ResetEncoders();
+        
     }
 
     /**
@@ -118,4 +134,49 @@ public class CoralSubSystem extends SubsystemBase {
         stopCoralIntake();
         stopPivot();
     }
+
+    /**
+     * Se reinician el encoder relativo del pivotmotor
+     */
+    public void ResetEncoders () {
+        pivotmotorEncoder.setPosition(0);
+    }
+    
+    /**
+     * @param angle : Angulo deseado
+     * 
+     * Calcula las rotaciones necesarias para llegar al angulo deseado
+     */
+    public double anglesToRotations ( Double angle ) {
+
+        double rotations = angle / 360 ;
+
+        rotations *= CoralConstants.gearRatio ;
+
+        return rotations;
+
+    }    
+
+    /**
+     * Con PID se posiciona en el angulo deseado el mecanismo del coral
+     */
+    public void setPivot2Angle ( double angle) {
+
+        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(), anglesToRotations(angle));
+
+        pivotMotor.set(finalOutput);
+
+    }
+
+    /**
+     * Se reinicia la posicion del mecanismo del coral
+     */
+    public void resetPosition () {
+    
+        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(),0);    
+
+        pivotMotor.set(finalOutput);
+
+    }
+
 }

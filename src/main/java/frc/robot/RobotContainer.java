@@ -18,13 +18,24 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.Drive.TunerConstants;
+import frc.robot.Elevator.ElevatorCmd;
+import frc.robot.Elevator.ElevatorContinousCmd;
+import frc.robot.Elevator.ElevatorSubSystem;
+import frc.robot.Intakes.CoralAlgeaContinousIntake;
+import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
+import frc.robot.Intakes.Algae.AlgeaSubSystem;
+import frc.robot.Intakes.Coral.CoralContinousInputCmd;
+import frc.robot.Intakes.Coral.CoralSubSystem;
+import frc.robot.constants.ElevatorConstants;
+import frc.robot.DeepCage.DeepCageCmd;
+import frc.robot.DeepCage.DeepCageSubSystem;
 import frc.robot.Drive.CommandSwerveDrivetrain;
 
 /**
  * RobotContainer
  *
  * @Clase que configura la integración del robot, especialmente en proyectos FRC
- * basados en WPILib. Incluye:</p>
+ * basados en WPILib. Incluye:
  *
  * <ul>
  *   <li>Creación y asignación de comandos por defecto al subsistema de swerve.</li>
@@ -34,7 +45,7 @@ import frc.robot.Drive.CommandSwerveDrivetrain;
  *   <li>Registro de telemetría en {@link Telemetry} para log de datos de swerve.</li>
  * </ul>
  *
- *<p>Esta clase {@code RobotContainer} se encarga de:</p>
+ *<p>Esta clase {@code RobotContainer} se encarga de:
  * <ol>
  *   <li>Definir y configurar el subsistema principal de tracción {@code drivetrain} (Swerve).
  *   <li>Asignar comandos por defecto y atajos de botones del control de Xbox.
@@ -42,8 +53,8 @@ import frc.robot.Drive.CommandSwerveDrivetrain;
  *   <li>Registrar telemetría personalizada.</li>
  * </ol>
  *
- * @Autor:  Fernando Joel Cruz Briones</p>
- * @Versión: 1.0</p>
+ * @Autor:  Fernando Joel Cruz Briones
+ * @Versión: 1.1
 */
 
 public class RobotContainer {
@@ -84,9 +95,14 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     /**
-     * Control de Xbox, asignado en el puerto 0.
+     * Control de Xbox, asignado en el puerto 0. Con este se conduce y maneja el robot
      */
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController driverController = new CommandXboxController(0);
+
+    /**
+     * Control de Xbox, asignado en el puerto 1. Con este se controlan los aditamentos
+     */
+    private final CommandXboxController AddOnsController = new CommandXboxController(1);
 
     /**
      * Subsistema principal de tracción swerve, creado desde los TunerConstants.
@@ -97,6 +113,26 @@ public class RobotContainer {
      * Selector de rutinas de autonomía, utilizando {@link AutoBuilder}.
      */
     private final SendableChooser<Command> autoChooser;
+
+    /**
+     * Subsistema principal de la DeepCage
+     */
+    private final DeepCageSubSystem deepCageSubSystem = new DeepCageSubSystem();
+
+    /**
+     * Subsistema principal del Elevador
+     */
+    private final ElevatorSubSystem elevatorSubSystem = new ElevatorSubSystem();
+
+    /**
+     * Subsistema principal del mecanismo del alga
+     */
+    private final AlgeaSubSystem algeaSubSystem = new AlgeaSubSystem();    
+
+    /**
+     * Subsistema principal del mecanismo del Coral
+     */
+    private final CoralSubSystem coralSubSystem = new CoralSubSystem();
 
     /**
      * Constructor principal de RobotContainer. Se encarga de configurar el mapeo de
@@ -118,35 +154,69 @@ public class RobotContainer {
      */
     private void configureBindings() {
         
-        // Comando por defecto: control field-centric con ejes de joystick
+        // Comando por defecto: control field-centric con ejes de driverController
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
             )
         );
 
-        // Botón A: mantenerlo presionado activa el freno (SwerveDriveBrake)
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // Botón x: mantenerlo presionado activa el freno (SwerveDriveBrake)
+        driverController.x().whileTrue(drivetrain.applyRequest(() -> brake));
         
-        // Botón B: mantenerlo presionado apunta las ruedas hacia la dirección del joystick izquierdo
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // Trigger Izquierdo: mantenerlo presionado apunta las ruedas hacia la dirección del driverController izquierdo
+        driverController.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-driverController.getLeftY(), -driverController.getLeftX()))
         ));
 
         // Configuración de SysId con combinación de botones (back/start con X/Y)
-        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        driverController.back().and(driverController.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverController.back().and(driverController.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // Reiniciar el heading field-centric al presionar Left Bumper
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // Boton y : Reiniciar el heading field-centric al presionar Left Bumper
+        driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // Registrar la función de telemetría para actualización periódica
         drivetrain.registerTelemetry(logger::telemeterize);
+        
+        //Bumper Derecho : A las manecillas del reloj se mueve el climber
+        driverController.rightBumper().whileTrue(new DeepCageCmd(false, deepCageSubSystem));
+        
+        // Bumper Izquierdo : En contra de las manecillas del reloj se mueve el climber
+        driverController.leftBumper().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
+        
+        //Boton b : Sacamos el Alga
+        AddOnsController.b().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
+        
+        //Boton x : Chupamos el coral
+        AddOnsController.x().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
+        
+        //Boton a : Sacamos al coral a la vez que chupamos el alga
+        AddOnsController.a().whileTrue(new CoralAlgeaContinousIntake(false, algeaSubSystem, coralSubSystem));
+        
+        //pov Arriba : Se extiende el Elevador hasta L4
+        AddOnsController.povUp().onTrue(new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));
+        
+        //pov Izquierda : Se extiende el Elevador hasta L3
+        AddOnsController.povLeft().onTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
+        
+        //pov Derecho : Se extiende el Elevador hasta L2
+        AddOnsController.povRight().onTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
+        
+        //pov Abajo : Se extiende el Elevador hasta L1
+        AddOnsController.povDown().onTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
+        
+        //bumper Izquierdo : Se extiende de manera continua el Elevador
+        AddOnsController.leftBumper().whileTrue(new ElevatorContinousCmd(true, elevatorSubSystem));
+        
+        //bumper Derecho : Se retrae de manera continua el elevador
+        AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
+        
     }
 
     /**

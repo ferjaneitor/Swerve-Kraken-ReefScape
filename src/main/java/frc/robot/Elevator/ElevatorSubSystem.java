@@ -28,7 +28,7 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.2
+ * @Versión: 1.3
  */
 public class ElevatorSubSystem extends SubsystemBase {
 
@@ -165,4 +165,17 @@ public class ElevatorSubSystem extends SubsystemBase {
         Motor1.set(Velocity);
         Motor2.set(-Velocity);
     }
+    
+     /**
+     * Aplica automaticamente un pid que se encarga de reiniciar la posicion del elevador
+     */
+    public void resetPosition () {
+        
+        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), 0);
+        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), 0);
+
+        Motor1.set(motor1Output);
+        Motor2.set(motor2Output);
+
+    }    
 }

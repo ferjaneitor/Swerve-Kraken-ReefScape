@@ -19,7 +19,7 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.1
+ * @Versión: 1.2
  */
 public class ElevatorCmd extends Command {
 
@@ -64,10 +64,6 @@ public class ElevatorCmd extends Command {
      */
     @Override
     public void initialize() {
-        if (isRetracting) {
-            // Si está en modo retracción, el objetivo es 0 metros
-            targetMeters = 0;
-        }
         targetRotations = elevatorSubSystem.Meters2Rotations(targetMeters);
     }
 
@@ -78,7 +74,14 @@ public class ElevatorCmd extends Command {
      */
     @Override
     public void execute() {
-        elevatorSubSystem.targetHeightFromRotations(targetRotations);
+    
+        if (isRetracting) {
+            // Si está en modo retracción, el objetivo se retrae
+            elevatorSubSystem.resetPosition();
+        } else {
+            elevatorSubSystem.targetHeightFromRotations(targetRotations);
+        }
+    
     }
 
     /**
