@@ -156,13 +156,15 @@ public class RobotContainer {
      */
     private void configureBindings() {
         
+        // Chasis
+        
         // Comando por defecto: control field-centric con ejes de driverController
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed * (driverController.a() != null? 0.2 : 1)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverController.getLeftX() * MaxSpeed * (driverController.a() != null? 0.2 : 1)) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate * (driverController.a() != null? 0.2 : 1)) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -191,6 +193,8 @@ public class RobotContainer {
         
         // Bumper Izquierdo : En contra de las manecillas del reloj se mueve el climber
         driverController.leftBumper().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
+        
+        //Aditamentos
         
         //Boton b : Sacamos el Alga
         AddOnsController.b().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
