@@ -23,8 +23,10 @@ import frc.robot.Elevator.ElevatorContinousCmd;
 import frc.robot.Elevator.ElevatorSubSystem;
 import frc.robot.Intakes.CoralAlgeaContinousIntake;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
+import frc.robot.Intakes.Algae.AlgaePivotCmd;
 import frc.robot.Intakes.Algae.AlgeaSubSystem;
 import frc.robot.Intakes.Coral.CoralContinousInputCmd;
+import frc.robot.Intakes.Coral.CoralPivotCmd;
 import frc.robot.Intakes.Coral.CoralSubSystem;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.DeepCage.DeepCageCmd;
@@ -216,6 +218,12 @@ public class RobotContainer {
         
         //bumper Derecho : Se retrae de manera continua el elevador
         AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
+        
+        //Joystick Derecho Eje Y : Se controla que tanto va a pivotar el mecanismo de la alga
+        new AlgaePivotCmd(false, algeaSubSystem, ()-> AddOnsController.getRightY());
+        
+        // Joystick Izquierdo Eje Y : Se controla que tanto va a pivotar el mecanismo del Coral
+        new CoralPivotCmd(false, coralSubSystem, ()-> AddOnsController.getLeftY());
         
     }
 

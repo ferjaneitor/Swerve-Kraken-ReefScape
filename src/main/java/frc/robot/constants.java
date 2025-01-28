@@ -466,6 +466,8 @@ public class constants {
         public static final double KD = 0;
 
         public static final double gearRatio = 20;
+
+        public static final Double CoralMaxVelocity = null;
     }
 
     /**
@@ -498,6 +500,8 @@ public class constants {
          * Velocidad de intake para los motores principales del mecanismo Algae.
          */
         public static final int intakeVelocity = 0;
+
+        public static final double AlgaePivotMaxVelocity = 0.8;
     }
 
     /**

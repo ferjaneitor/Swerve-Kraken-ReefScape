@@ -1,5 +1,7 @@
 package frc.robot.Intakes.Coral;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.CoralConstants;
 
@@ -40,16 +42,18 @@ public class CoralPivotCmd extends Command {
      */
     private final CoralSubSystem coralSubSystem;
 
+    private Supplier<Double> yJoystickSupplier;
+    
     /**
      * Crea un nuevo comando para manejar el pivote en el subsistema Coral.
      *
      * @param invertDirection Indica si la dirección del pivote debe invertirse.
      * @param coralSubSystem  Instancia del subsistema Coral.
      */
-    public CoralPivotCmd(boolean invertDirection, CoralSubSystem coralSubSystem) {
+    public CoralPivotCmd(boolean invertDirection, CoralSubSystem coralSubSystem, Supplier<Double> yJoystickSupplier) {
         this.DirectionInverted = invertDirection;
-        this.finalVelocity = CoralConstants.MotorsIntakeVelocity * (DirectionInverted ? -1 : 1);
         this.coralSubSystem = coralSubSystem;
+        this.yJoystickSupplier = yJoystickSupplier;
     }
 
     /**
@@ -57,7 +61,7 @@ public class CoralPivotCmd extends Command {
      */
     @Override
     public void initialize() {
-        // Sin acciones adicionales de inicialización.
+        finalVelocity = (yJoystickSupplier.get() * CoralConstants.CoralMaxVelocity) * (DirectionInverted ? -1 : 1);
     }
 
     /**
@@ -66,7 +70,9 @@ public class CoralPivotCmd extends Command {
      */
     @Override
     public void execute() {
-        coralSubSystem.enableCoralIntake(finalVelocity);
+        if (yJoystickSupplier.get() >= 0.15) {
+            coralSubSystem.enablePivot(finalVelocity);;
+        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package frc.robot.Intakes.Algae;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AlgaeConstants;
 
@@ -41,15 +43,19 @@ public class AlgaePivotCmd extends Command {
      */
     private double finalVelocity;
 
+    // Supplier que nos brinda la velocidad atravez del joystick derecho en el eje y
+    private Supplier<Double> yJoystickSupplier ;
+
     /**
      * Crea un nuevo comando para ajustar la inclinación/pivote de Algea.
      *
      * @param isInverted    Indica si la dirección del pivote debe invertirse.
      * @param algeaSubSystem Instancia del subsistema Algea a controlar.
      */
-    public AlgaePivotCmd(boolean isInverted, AlgeaSubSystem algeaSubSystem) {
+    public AlgaePivotCmd(boolean isInverted, AlgeaSubSystem algeaSubSystem, Supplier<Double> yJoystickSupplier) {
         this.algeaSubSystem = algeaSubSystem;
         this.isInverted = isInverted;
+        this.yJoystickSupplier = yJoystickSupplier;
     }
 
     /**
@@ -59,7 +65,7 @@ public class AlgaePivotCmd extends Command {
      */
     @Override
     public void initialize() {
-        this.finalVelocity = AlgaeConstants.pivotMotorVelocity * (isInverted ? -1 : 1);
+        this.finalVelocity = (yJoystickSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity) * (isInverted ? -1 : 1);
     }
 
     /**
@@ -68,7 +74,9 @@ public class AlgaePivotCmd extends Command {
      */
     @Override
     public void execute() {
-        algeaSubSystem.enablePivot(finalVelocity);
+        if (yJoystickSupplier.get() >= 0.15){
+            algeaSubSystem.enablePivot(finalVelocity);
+        }
     }
 
     /**
