@@ -41,7 +41,6 @@ public class DeepCageSubSystem extends SubsystemBase {
      */
     public DeepCageSubSystem() {
         this.motor1 = new SparkMax(DeepCageConstants.motor1ID, MotorType.kBrushless);
-        this.motor2 = new SparkMax(DeepCageConstants.motor2ID, MotorType.kBrushless);
     }
 
     /**
@@ -60,6 +59,5 @@ public class DeepCageSubSystem extends SubsystemBase {
      */
     public void enableMotors(double velocity) {
         motor1.set(velocity);
-        motor2.set(velocity);
     }
 }

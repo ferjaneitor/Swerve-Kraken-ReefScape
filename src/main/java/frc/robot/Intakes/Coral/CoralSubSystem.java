@@ -34,15 +34,12 @@ import frc.robot.constants.CoralConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.1
+ * @Versión: 1.3
  */
 public class CoralSubSystem extends SubsystemBase {
 
     /** Motor principal de succión. */
     private SparkMax motor1;
-
-    /** Motor secundario de succión (opcional). */
-    private SparkMax motor2;
 
     /** Motor que controla el pivote del mecanismo Coral. */
     private SparkMax pivotMotor;
@@ -54,27 +51,13 @@ public class CoralSubSystem extends SubsystemBase {
     private PIDController PivotpidController ;
 
     /**
-     * Indica si el subsistema está configurado para usar dos motores de succión
-     * o solo uno, según {@link CoralConstants#twoMotorsIsActive}.
-     */
-    private boolean twoMotorsActive;
-
-    /**
      * Crea una nueva instancia del {@code CoralSubSystem}, configurando
      * el número de motores de succión y el motor de pivote según las constantes
      * definidas en {@link CoralConstants}.
      */
     public CoralSubSystem() {
-        this.twoMotorsActive = CoralConstants.twoMotorsIsActive;
 
         this.motor1 = new SparkMax(CoralConstants.motor1ID, MotorType.kBrushless);
-
-        // Inicializa motor2 solo si se requiere manejar dos motores
-        if (twoMotorsActive) {
-            this.motor2 = new SparkMax(CoralConstants.motor2ID, MotorType.kBrushless);
-        } else {
-            this.motor2 = null;
-        }
 
         this.pivotMotor = new SparkMax(CoralConstants.pivotMotorID, MotorType.kBrushless);
         
@@ -93,9 +76,6 @@ public class CoralSubSystem extends SubsystemBase {
      * @param Velocity Velocidad deseada (típicamente de -1.0 a 1.0).
      */
     public void enableCoralIntake(double Velocity) {
-        if (twoMotorsActive) {
-            motor2.set(-Velocity);
-        }
         motor1.set(Velocity);
     }
 
@@ -120,9 +100,6 @@ public class CoralSubSystem extends SubsystemBase {
      * Detiene los motores de succión, estableciendo su velocidad en 0.
      */
     public void stopCoralIntake() {
-        if (twoMotorsActive && motor2 != null) {
-            motor2.set(0);
-        }
         motor1.set(0);
     }
 
@@ -175,6 +152,12 @@ public class CoralSubSystem extends SubsystemBase {
         double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(),0);    
 
         pivotMotor.set(finalOutput);
+
+    }
+
+    public double getPosition() {
+
+        return pivotmotorEncoder.getPosition();
 
     }
 

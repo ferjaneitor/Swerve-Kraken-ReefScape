@@ -21,7 +21,7 @@ import frc.robot.constants.AlgaeConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class AlgaeEnableIntakeCmd extends Command {
 
@@ -33,7 +33,7 @@ public class AlgaeEnableIntakeCmd extends Command {
     /**
      * Referencia al subsistema Algea, que maneja el mecanismo de intake.
      */
-    private AlgeaSubSystem algeaSubSystem;
+    private AlgaeSubSystem algeaSubSystem;
 
     /**
      * Velocidad final calculada según la constante {@code intakeVelocity}
@@ -47,9 +47,10 @@ public class AlgaeEnableIntakeCmd extends Command {
      * @param isInverted     Indica si se invierte el sentido del motor (true/false).
      * @param algeaSubSystem Instancia del subsistema Algea a controlar.
      */
-    public AlgaeEnableIntakeCmd(boolean isInverted, AlgeaSubSystem algeaSubSystem) {
+    public AlgaeEnableIntakeCmd(boolean invertDirection, AlgaeSubSystem algeaSubSystem) {
         this.algeaSubSystem = algeaSubSystem;
-        this.isInverted = isInverted;
+        this.isInverted = invertDirection;
+        addRequirements(algeaSubSystem);
     }
 
     /**

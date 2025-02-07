@@ -2,7 +2,7 @@ package frc.robot.Intakes;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants;
-import frc.robot.Intakes.Algae.AlgeaSubSystem;
+import frc.robot.Intakes.Algae.AlgaeSubSystem;
 import frc.robot.Intakes.Coral.CoralSubSystem;
 
 /**
@@ -24,7 +24,7 @@ import frc.robot.Intakes.Coral.CoralSubSystem;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class CoralAlgeaContinousIntake extends Command {
 
@@ -36,7 +36,7 @@ public class CoralAlgeaContinousIntake extends Command {
     /**
      * Subsistema Algea que controla uno de los mecanismos de intake.
      */
-    private AlgeaSubSystem algeaSubSystem;
+    private AlgaeSubSystem algeaSubSystem;
 
     /**
      * Subsistema Coral que controla el otro mecanismo de intake.
@@ -58,7 +58,7 @@ public class CoralAlgeaContinousIntake extends Command {
      * @param algeaSubSystem   Subsistema de Algea que maneja sus motores de intake.
      * @param coralSubSystem   Subsistema de Coral que maneja sus motores de intake.
      */
-    public CoralAlgeaContinousIntake(boolean isInverted, AlgeaSubSystem algeaSubSystem, CoralSubSystem coralSubSystem) {
+    public CoralAlgeaContinousIntake(boolean isInverted, AlgaeSubSystem algeaSubSystem, CoralSubSystem coralSubSystem) {
         this.isInverted = isInverted;
         this.algeaSubSystem = algeaSubSystem;
         this.coralSubSystem = coralSubSystem;
@@ -81,7 +81,7 @@ public class CoralAlgeaContinousIntake extends Command {
     @Override
     public void execute() {
         algeaSubSystem.enableAlgaeIntake(finalVelocity);
-        coralSubSystem.enableCoralIntake(-finalVelocity);
+        coralSubSystem.enableCoralIntake(finalVelocity);
     }
 
     /**

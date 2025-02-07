@@ -204,6 +204,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
     }
 
     /**
@@ -224,6 +225,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
     }
 
     /**
@@ -252,9 +254,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        configureAutoBuilder();
     }
 
-    @SuppressWarnings("unused")
     /**
      * Configura el {@code AutoBuilder} para la ejecución de trayectorias (PathPlanner).
      * <p>
@@ -271,7 +273,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
      * se reporta un mensaje a la consola de DriverStation.
      * </p>
      */
-    private void configureAutoBuilder() {
+    public void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(

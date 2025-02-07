@@ -1,8 +1,11 @@
 package frc.robot.Elevator;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +31,7 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.3
+ * @Versión: 1.5
  */
 public class ElevatorSubSystem extends SubsystemBase {
 
@@ -46,6 +49,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * Encoder relativo integrado en el primer motor (Motor1).
      */
     private RelativeEncoder motor1Encoder;
+
+    SparkMaxConfig config ;
 
     /**
      * Encoder relativo integrado en el segundo motor (Motor2).
@@ -76,8 +81,20 @@ public class ElevatorSubSystem extends SubsystemBase {
 
         this.motor1PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
         this.motor2PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        
+        // Convierte el diámetro del sprocket de pulgadas a centimetros
+        double SproketDiameterMeters = ElevatorConstants.SproketDiameterInches * 2.54;
+        // Calcula la circunferencia en metros
+        double SproketCircumferenceMeters = SproketDiameterMeters * Math.PI;
+        
+        config = new SparkMaxConfig();
 
-        ResetEncoders();
+        config.encoder.positionConversionFactor((SproketCircumferenceMeters * ElevatorConstants.ElevatorStages ) / ElevatorConstants.GearRatio) ;
+
+        Motor1.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        Motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        ResetEncoders();    
     }
 
     /**
@@ -101,17 +118,18 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @return Número de rotaciones resultante para los motores.
      */
     public double Meters2Rotations(double DistanceMeters) {
+
         // Convierte el diámetro del sprocket de pulgadas a metros
-        double wheelDiameterMeters = ElevatorConstants.SproketDiameterInches * 0.0254;
+        double SproketDiameterMeters = ElevatorConstants.SproketDiameterInches * 0.0254;
         // Calcula la circunferencia en metros
-        double wheelCircumferenceMeters = wheelDiameterMeters * Math.PI;
+        double SproketCircumferenceMeters = SproketDiameterMeters * Math.PI;
 
         // Aplica el offset de la distancia mínima y el número de etapas del elevador
-        double DistanceMetersWithOffSet = wheelCircumferenceMeters - ElevatorConstants.OffSetMeters;
+        double DistanceMetersWithOffSet = SproketCircumferenceMeters - ElevatorConstants.OffSetMeters;
         double DistanceMetersHalf = DistanceMetersWithOffSet / ElevatorConstants.ElevatorStages;
 
         // Convierte la distancia final en rotaciones, multiplicando por la relación de engranajes
-        return (DistanceMetersHalf / wheelCircumferenceMeters) * ElevatorConstants.GearRatio;
+        return (DistanceMetersHalf / SproketCircumferenceMeters) * ElevatorConstants.GearRatio;
     }
 
     /**
@@ -119,14 +137,14 @@ public class ElevatorSubSystem extends SubsystemBase {
      * las salidas PID de cada motor (teniendo en cuenta que el segundo debe
      * invertirse) y se establecen en los motores SparkMax.
      *
-     * @param targetRotations Cantidad de rotaciones deseadas (positivo para subir, negativo para bajar).
+     * @param targetMeters Cantidad de rotaciones deseadas (positivo para subir, negativo para bajar).
      */
-    public void targetHeightFromRotations(double targetRotations) {
-        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), targetRotations);
-        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), -targetRotations);
+    public void targetHeightFromRotations(double targetMeters) {
+        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
+        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
 
-        Motor1.set(motor1Output);
-        Motor2.set(motor2Output);
+        Motor1.setVoltage(motor1Output);
+        Motor2.setVoltage(motor2Output);
     }
 
     /**

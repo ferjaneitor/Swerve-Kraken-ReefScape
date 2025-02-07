@@ -22,7 +22,7 @@ import frc.robot.constants.CoralConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class CoralPivotCmd extends Command {
 
@@ -54,6 +54,7 @@ public class CoralPivotCmd extends Command {
         this.DirectionInverted = invertDirection;
         this.coralSubSystem = coralSubSystem;
         this.yJoystickSupplier = yJoystickSupplier;
+        addRequirements(coralSubSystem);
     }
 
     /**
@@ -61,7 +62,7 @@ public class CoralPivotCmd extends Command {
      */
     @Override
     public void initialize() {
-        finalVelocity = (yJoystickSupplier.get() * CoralConstants.CoralMaxVelocity) * (DirectionInverted ? -1 : 1);
+        
     }
 
     /**
@@ -70,8 +71,13 @@ public class CoralPivotCmd extends Command {
      */
     @Override
     public void execute() {
-        if (yJoystickSupplier.get() >= 0.15) {
+        
+        finalVelocity = (yJoystickSupplier.get() * CoralConstants.CoralPivotMaxVelocity) * (DirectionInverted ? -1 : 1);
+        
+        if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2) {
             coralSubSystem.enablePivot(finalVelocity);;
+        }else {
+            coralSubSystem.stopPivot();;
         }
     }
 

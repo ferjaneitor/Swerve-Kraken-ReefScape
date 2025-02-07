@@ -19,7 +19,7 @@ import frc.robot.constants.CoralConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class CoralContinousInputCmd extends Command {
 
@@ -50,7 +50,7 @@ public class CoralContinousInputCmd extends Command {
         this.directionInverted = invertDirection;
         this.intakeVelocity = CoralConstants.MotorsIntakeVelocity * (directionInverted ? -1 : 1);
         this.coralSubSystem = coralSubSystem;
-        addRequirements(this.coralSubSystem);
+        addRequirements(coralSubSystem);
     }
 
     /**

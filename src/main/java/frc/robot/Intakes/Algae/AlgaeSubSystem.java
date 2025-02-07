@@ -4,8 +4,10 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AlgaeConstants;
+import frc.robot.constants.CoralConstants;
 
 /**
  * @AlgeaSubSystem es el subsistema que gestiona los motores y el pivote del
@@ -29,9 +31,9 @@ import frc.robot.constants.AlgaeConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
-public class AlgeaSubSystem extends SubsystemBase {
+public class AlgaeSubSystem extends SubsystemBase {
 
     /** Motor 1 para la succión (intake). */
     private SparkMax motor1;
@@ -43,17 +45,22 @@ public class AlgeaSubSystem extends SubsystemBase {
     /** Encoder relativo del motor de pivote. */
     private RelativeEncoder pivotMotoEncoder;
 
+    private PIDController PivotpidController ;
+
     /**
      * Constructor del subsistema Algea. Inicializa los motores para la succión
      * y el motor/encoder del pivote con sus IDs configurados en
      * {@link AlgaeConstants}.
      */
-    public AlgeaSubSystem() {
+    public AlgaeSubSystem() {
         this.motor1 = new SparkMax(AlgaeConstants.motor1ID, MotorType.kBrushless);
         this.motor2 = new SparkMax(AlgaeConstants.motor2ID, MotorType.kBrushless);
 
         this.pivotMotor = new SparkMax(AlgaeConstants.pivotMotorID, MotorType.kBrushless);
         this.pivotMotoEncoder = pivotMotor.getEncoder();
+    
+        this.PivotpidController = new PIDController ( AlgaeConstants.kp, AlgaeConstants.KI, AlgaeConstants.KD);
+    
     }
 
     /**
@@ -117,4 +124,42 @@ public class AlgeaSubSystem extends SubsystemBase {
     public void resetEncoders() {
         pivotMotoEncoder.setPosition(0);
     }
+
+    /**
+     * @param angle : Angulo deseado
+     * 
+     * Calcula las rotaciones necesarias para llegar al angulo deseado
+     */
+    public double anglesToRotations ( Double angle ) {
+
+        double rotations = angle / 360 ;
+
+        rotations *= CoralConstants.gearRatio ;
+
+        return rotations;
+
+    }   
+
+     /**
+     * Con PID se posiciona en el angulo deseado el mecanismo del coral
+     */
+    public void setPivot2Angle ( double angle) {
+
+        double finalOutput = PivotpidController.calculate(pivotMotoEncoder.getPosition(), anglesToRotations(angle));
+
+        pivotMotor.set(finalOutput);
+
+    }
+
+    /**
+     * Se reinicia la posicion del mecanismo del coral
+     */
+    public void resetPosition () {
+    
+        double finalOutput = PivotpidController.calculate(pivotMotoEncoder.getPosition(),0);    
+
+        pivotMotor.set(finalOutput);
+
+    }
+
 }

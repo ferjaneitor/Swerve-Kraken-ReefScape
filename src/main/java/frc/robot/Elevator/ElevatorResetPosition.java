@@ -19,14 +19,10 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.3
+ * @Versión: 1.0
  */
-public class ElevatorCmd extends Command {
 
-    /**
-     * Distancia objetivo en metros a la que se quiere llevar el elevador.
-     */
-    private double targetMeters;
+public class ElevatorResetPosition extends Command {
 
     /**
      * Subsistema de elevador que gestiona la lógica y el hardware.
@@ -39,15 +35,19 @@ public class ElevatorCmd extends Command {
      * @param DistanceMeters   Distancia objetivo en metros para el elevador.
      * @param elevatorSubSystem Referencia al subsistema del elevador que se controlará.
      */
-    public ElevatorCmd(double DistanceMeters, ElevatorSubSystem elevatorSubSystem) {
-        this.targetMeters = DistanceMeters;
+    public ElevatorResetPosition( ElevatorSubSystem elevatorSubSystem) {
         this.elevatorSubSystem = elevatorSubSystem;
         elevatorSubSystem.ResetEncoders();
+        addRequirements(elevatorSubSystem);
     }
 
+    /**
+     * Se ejecuta una sola vez al inicio del comando. Si el elevador está
+     * en modo retracción ({@code isRetracting == true}), se fuerza la meta
+     * a 0 metros. Después, se convierte la meta en rotaciones.
+     */
     @Override
     public void initialize() {
-
     }
 
     /**
@@ -58,7 +58,7 @@ public class ElevatorCmd extends Command {
     @Override
     public void execute() {
     
-        elevatorSubSystem.targetHeightFromRotations(targetMeters);
+        elevatorSubSystem.resetPosition();
     
     }
 
@@ -85,10 +85,11 @@ public class ElevatorCmd extends Command {
     @Override
     public boolean isFinished() {
         // Terminar cuando ambos motores alcancen la posición objetivo
-        return Math.abs(elevatorSubSystem.getMotor2Position() - elevatorSubSystem.Meters2Rotations(targetMeters))
+        return Math.abs(elevatorSubSystem.getMotor1Position())
                    < ElevatorConstants.TOLERANCE
                &&
-               Math.abs(elevatorSubSystem.getMotor2Position() + elevatorSubSystem.Meters2Rotations(targetMeters))
+               Math.abs(elevatorSubSystem.getMotor2Position())
                    < ElevatorConstants.TOLERANCE;
     }
+    
 }

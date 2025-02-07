@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +25,7 @@ import frc.robot.Elevator.ElevatorSubSystem;
 import frc.robot.Intakes.CoralAlgeaContinousIntake;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
 import frc.robot.Intakes.Algae.AlgaePivotCmd;
-import frc.robot.Intakes.Algae.AlgeaSubSystem;
+import frc.robot.Intakes.Algae.AlgaeSubSystem;
 import frc.robot.Intakes.Coral.CoralContinousInputCmd;
 import frc.robot.Intakes.Coral.CoralPivotCmd;
 import frc.robot.Intakes.Coral.CoralSubSystem;
@@ -56,7 +57,7 @@ import frc.robot.Drive.CommandSwerveDrivetrain;
  * </ol>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.1
+ * @Versión: 1.3
 */
 
 public class RobotContainer {
@@ -129,7 +130,7 @@ public class RobotContainer {
     /**
      * Subsistema principal del mecanismo del alga
      */
-    private final AlgeaSubSystem algeaSubSystem = new AlgeaSubSystem();    
+    private final AlgaeSubSystem algeaSubSystem = new AlgaeSubSystem();    
 
     /**
      * Subsistema principal del mecanismo del Coral
@@ -147,6 +148,19 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Test");
         SmartDashboard.putData("Auto Mode", autoChooser);
         
+        NamedCommands.registerCommand("Elevator to L4", new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));   
+        NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));   
+        NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));   
+        NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));   
+        
+        NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
+        NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));
+        
+        NamedCommands.registerCommand("Coral In", new CoralContinousInputCmd(false, coralSubSystem));
+        NamedCommands.registerCommand("Coral Out", new CoralContinousInputCmd(true, coralSubSystem));
+        
+        NamedCommands.registerCommand("Coral Out and Algae In", new CoralAlgeaContinousIntake(false, algeaSubSystem, coralSubSystem));
+        
     }
 
     /**
@@ -162,14 +176,14 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed * (driverController.a() != null? 0.2 : 1)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverController.getLeftX() * MaxSpeed * (driverController.a() != null? 0.2 : 1)) // Drive left with negative X (left)
-                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate * (driverController.a() != null? 0.2 : 1)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverController.getLeftX() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive counterclockwise with negative X (left)
             )
         );
 
-        // Botón x: mantenerlo presionado activa el freno (SwerveDriveBrake)
-        driverController.x().whileTrue(drivetrain.applyRequest(() -> brake));
+        // Bumper derecho: mantenerlo presionado activa el freno (SwerveDriveBrake)
+        driverController.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
         
         // Trigger Izquierdo: mantenerlo presionado apunta las ruedas hacia la dirección del driverController izquierdo
         driverController.leftTrigger().whileTrue(drivetrain.applyRequest(() ->
@@ -182,52 +196,56 @@ public class RobotContainer {
         driverController.start().and(driverController.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driverController.start().and(driverController.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // Boton y : Reiniciar el heading field-centric al presionar Left Bumper
+        // Boton y : Reiniciar el heading field-centric
         driverController.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         // Registrar la función de telemetría para actualización periódica
         drivetrain.registerTelemetry(logger::telemeterize);
         
         //Bumper Derecho : A las manecillas del reloj se mueve el climber
-        driverController.rightBumper().whileTrue(new DeepCageCmd(false, deepCageSubSystem));
+        driverController.a().whileTrue(new DeepCageCmd(false, deepCageSubSystem));
         
         // Bumper Izquierdo : En contra de las manecillas del reloj se mueve el climber
-        driverController.leftBumper().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
+        driverController.x().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
         
         //Aditamentos
         
-        //Boton b : Sacamos el Alga
-        AddOnsController.b().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
+        //Boton y : Sacamos el Alga
+        AddOnsController.y().whileTrue(new AlgaeEnableIntakeCmd(true, algeaSubSystem));
         
-        //Boton x : Chupamos el coral
-        AddOnsController.x().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
+        //Boton x : chupamos el Alga
+        AddOnsController.x().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         
-        //Boton a : Sacamos al coral a la vez que chupamos el alga
-        AddOnsController.a().whileTrue(new CoralAlgeaContinousIntake(false, algeaSubSystem, coralSubSystem));
+        //Boton a : Chupamos el coral
+        AddOnsController.a().whileTrue(new CoralContinousInputCmd(true, coralSubSystem));
+        
+        //Boton b : sacamos el coral
+        AddOnsController.b().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
         
         //pov Arriba : Se extiende el Elevador hasta L4
         AddOnsController.povUp().onTrue(new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));
         
-        //pov Izquierda : Se extiende el Elevador hasta L3
-        AddOnsController.povLeft().onTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
+        //pov Izquierda : Se extiende el Elevador hasta L1
+        AddOnsController.povLeft().onTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
         
-        //pov Derecho : Se extiende el Elevador hasta L2
-        AddOnsController.povRight().onTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
+        //pov Derecho : Se extiende el Elevador hasta L3
+        AddOnsController.povRight().onTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
         
-        //pov Abajo : Se extiende el Elevador hasta L1
-        AddOnsController.povDown().onTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
+        //pov Abajo : Se extiende el Elevador hasta L2
+        AddOnsController.povDown().onTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
         
-        //bumper Izquierdo : Se extiende de manera continua el Elevador
-        AddOnsController.leftBumper().whileTrue(new ElevatorContinousCmd(true, elevatorSubSystem));
-        
-        //bumper Derecho : Se retrae de manera continua el elevador
+        //bumper derecho : Se extiende de manera continua el Elevador
         AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
         
+        //bumper izquierdo : Se retrae de manera continua el elevador
+        AddOnsController.leftBumper().whileTrue(new ElevatorContinousCmd(true, elevatorSubSystem));
+        
         //Joystick Derecho Eje Y : Se controla que tanto va a pivotar el mecanismo de la alga
-        new AlgaePivotCmd(false, algeaSubSystem, ()-> AddOnsController.getRightY());
+        algeaSubSystem.setDefaultCommand( new AlgaePivotCmd(true, algeaSubSystem, ()-> AddOnsController.getRightY()));
         
         // Joystick Izquierdo Eje Y : Se controla que tanto va a pivotar el mecanismo del Coral
-        new CoralPivotCmd(false, coralSubSystem, ()-> AddOnsController.getLeftY());
+        coralSubSystem.setDefaultCommand(new CoralPivotCmd(true, coralSubSystem, ()-> AddOnsController.getLeftY()));;
+
         
     }
 

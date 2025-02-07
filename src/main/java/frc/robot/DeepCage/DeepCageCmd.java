@@ -48,6 +48,7 @@ public class DeepCageCmd extends Command {
     public DeepCageCmd(boolean isInverted, DeepCageSubSystem deepCageSubSystem) {
         this.deepCageSubSystem = deepCageSubSystem;
         this.isInverted = isInverted;
+         addRequirements(deepCageSubSystem);
     }
 
     /**

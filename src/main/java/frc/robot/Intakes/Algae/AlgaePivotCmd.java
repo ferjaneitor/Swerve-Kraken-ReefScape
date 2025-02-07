@@ -22,7 +22,7 @@ import frc.robot.constants.AlgaeConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.0
+ * @Versión: 1.1
  */
 public class AlgaePivotCmd extends Command {
 
@@ -35,7 +35,7 @@ public class AlgaePivotCmd extends Command {
      * Subsistema que controla el mecanismo Algea (intake) y sus partes móviles,
      * incluido el pivote.
      */
-    private AlgeaSubSystem algeaSubSystem;
+    private AlgaeSubSystem algeaSubSystem;
 
     /**
      * Velocidad final calculada para el pivote, basada en la constante
@@ -52,10 +52,11 @@ public class AlgaePivotCmd extends Command {
      * @param isInverted    Indica si la dirección del pivote debe invertirse.
      * @param algeaSubSystem Instancia del subsistema Algea a controlar.
      */
-    public AlgaePivotCmd(boolean isInverted, AlgeaSubSystem algeaSubSystem, Supplier<Double> yJoystickSupplier) {
+    public AlgaePivotCmd(boolean invertDirection, AlgaeSubSystem algeaSubSystem, Supplier<Double> yJoystickSupplier) {
         this.algeaSubSystem = algeaSubSystem;
-        this.isInverted = isInverted;
+        this.isInverted = invertDirection;
         this.yJoystickSupplier = yJoystickSupplier;
+        addRequirements(algeaSubSystem);
     }
 
     /**
@@ -65,7 +66,6 @@ public class AlgaePivotCmd extends Command {
      */
     @Override
     public void initialize() {
-        this.finalVelocity = (yJoystickSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity) * (isInverted ? -1 : 1);
     }
 
     /**
@@ -74,9 +74,15 @@ public class AlgaePivotCmd extends Command {
      */
     @Override
     public void execute() {
-        if (yJoystickSupplier.get() >= 0.15){
+        
+        finalVelocity = (yJoystickSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity) * (isInverted ? -1 : 1);
+        
+        if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2){
             algeaSubSystem.enablePivot(finalVelocity);
+        }else {
+            algeaSubSystem.stopPivot();
         }
+        
     }
 
     /**

@@ -12,7 +12,7 @@ import edu.wpi.first.units.measure.Voltage;
      
     /** 
     * @author  Fernando Joel Cruz Briones
-    * @version 1.8
+    * @version 1.9
     */
 public class constants {
     
@@ -361,17 +361,17 @@ public class constants {
         /**
          * Diámetro del sprocket (en pulgadas) que se utiliza en el elevador.
          */
-        public static final double SproketDiameterInches = 2;
+        public static final double SproketDiameterInches = 1.10;
 
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.5;
+        public static final double KP = 0.2;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
          */
-        public static final double KI = 0;
+        public static final double KI = 0.02;
 
         /**
          * Constante de ganancia derivativa para el PID del elevador.
@@ -381,28 +381,28 @@ public class constants {
         /**
          * Offset en metros (por ejemplo, altura mínima restablecida).
          */
-        public static final double OffSetMeters = 0.98;
+        public static final double OffSetMeters = 62;
 
         /**
          * Tolerancia en rotaciones (o unidades equivalentes) para determinar
          * si el elevador ha alcanzado la posición objetivo.
          */
-        public static final double TOLERANCE = 0.05;
+        public static final double TOLERANCE = 2;
 
         /**
-         * ID del motor 1 (NEO/SparkMax u otro) en el elevador.
+         * ID del motor 1 (NEO/SparkMax u otro) en el elevador (Derecho).
          */
-        public static final int Motor1ID = 0;
+        public static final int Motor1ID = 4;
 
         /**
-         * ID del motor 2 (NEO/SparkMax u otro) en el elevador.
+         * ID del motor 2 (NEO/SparkMax u otro) en el elevador (Izquierdo).
          */
-        public static final int Motor2ID = 0;
+        public static final int Motor2ID = 7;
 
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
          */
-        public static final int ElevatorVelocity = 0;
+        public static final double ElevatorVelocity = 0.2;
 
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
@@ -414,13 +414,13 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 0;
+        public static final double L4 = 186;
 
-        public static final double L3 = 0;
+        public static final double L3 = 124;
 
-        public static final double L2 = 0;
+        public static final double L2 = 85;
 
-        public static final double L1 = 0;
+        public static final double L1 = 70;
     }
 
     /**
@@ -432,34 +432,21 @@ public class constants {
         /**
          * ID del motor principal del intake.
          */
-        public static final int motor1ID = 0;
+        public static final int motor1ID = 16;
 
-        /**
-         * ID del segundo motor del intake, si está activo.
-         */
-        public static final int motor2ID = 0;
 
         /**
          * ID del motor que controla el pivote (angular) del mecanismo Coral.
          */
-        public static final int pivotMotorID = 0;
+        public static final int pivotMotorID = 5;
 
-        /**
-         * Indica si el subsistema usa dos motores de intake (true) o solo uno (false).
-         */
-        public static final boolean twoMotorsIsActive = false;
-
-        /**
-         * Velocidad deseada para el motor de pivote.
-         */
-        public static final double pivotMotorVelocity = 0;
 
         /**
          * Velocidad de intake para los motores principales del mecanismo Coral.
          */
-        public static final double MotorsIntakeVelocity = 0;
+        public static final double MotorsIntakeVelocity = 0.3;
 
-        public static final double KP = 0.5;
+        public static final double KP = 0.03;
 
         public static final double KI = 0;
 
@@ -467,7 +454,7 @@ public class constants {
 
         public static final double gearRatio = 20;
 
-        public static final Double CoralMaxVelocity = null;
+        public static final Double CoralPivotMaxVelocity = 0.15;
     }
 
     /**
@@ -479,29 +466,32 @@ public class constants {
         /**
          * ID del motor 1 para el mecanismo de intake.
          */
-        public static final int motor1ID = 0;
+        public static final int motor1ID = 3;
 
         /**
          * ID del motor de pivote para el mecanismo Algae, si corresponde.
          */
-        public static final int pivotMotorID = 0;
+        public static final int pivotMotorID = 6;
 
         /**
          * ID de un segundo motor de intake, si el subsistema Algae lo requiere.
          */
-        public static final int motor2ID = 0;
-
-        /**
-         * Velocidad de pivote (rotación) para el mecanismo Algae.
-         */
-        public static final int pivotMotorVelocity = 0;
+        public static final int motor2ID = 1;
 
         /**
          * Velocidad de intake para los motores principales del mecanismo Algae.
          */
-        public static final int intakeVelocity = 0;
+        public static final double intakeVelocity = 0.1;
 
-        public static final double AlgaePivotMaxVelocity = 0.8;
+        public static final double AlgaePivotMaxVelocity = 0.2;
+
+        public static final double kp = 0.1;
+
+        public static final double KI = 0;
+
+        public static final double KD = 0;
+
+        public static final double TOLERANCE = 0.5;
     }
 
     /**
@@ -513,17 +503,12 @@ public class constants {
         /**
          * ID del primer motor (motor1) del subsistema DeepCage.
          */
-        public static final int motor1ID = 0;
-
-        /**
-         * ID del segundo motor (motor2) del subsistema DeepCage.
-         */
-        public static final int motor2ID = 0;
+        public static final int motor1ID = 19;
 
         /**
          * Velocidad de operación para el mecanismo DeepCage.
          */
-        public static final int deepCageVelocity = 0;
+        public static final double deepCageVelocity = 0.2;
     }
     
     //Constantes de la LimeLight
@@ -550,6 +535,6 @@ public class constants {
      * simultáneamente. Usada, por ejemplo, en el comando que combina ambos
      * intakes (Coral y Algae) de forma continua.
      */
-    public static final double CoralAlgaeFinalVelocity = 0 ;
+    public static final double CoralAlgaeFinalVelocity = 0.1 ;
     
 }
