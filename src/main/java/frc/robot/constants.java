@@ -366,12 +366,12 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.2;
+        public static final double KP = 0.24;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
          */
-        public static final double KI = 0.02;
+        public static final double KI = 0.03;
 
         /**
          * Constante de ganancia derivativa para el PID del elevador.

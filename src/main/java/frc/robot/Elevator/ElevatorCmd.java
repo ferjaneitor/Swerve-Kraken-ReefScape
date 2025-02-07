@@ -19,7 +19,7 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.3
+ * @Versión: 1.4
  */
 public class ElevatorCmd extends Command {
 
@@ -85,10 +85,10 @@ public class ElevatorCmd extends Command {
     @Override
     public boolean isFinished() {
         // Terminar cuando ambos motores alcancen la posición objetivo
-        return Math.abs(elevatorSubSystem.getMotor2Position() - elevatorSubSystem.Meters2Rotations(targetMeters))
+        return Math.abs(elevatorSubSystem.getMotor1Position() - (targetMeters - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE
                &&
-               Math.abs(elevatorSubSystem.getMotor2Position() + elevatorSubSystem.Meters2Rotations(targetMeters))
+               Math.abs(elevatorSubSystem.getMotor2Position() + (targetMeters - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE;
     }
 }
