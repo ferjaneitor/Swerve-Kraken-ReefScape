@@ -2,7 +2,10 @@ package frc.robot.Intakes.Coral;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,7 +37,7 @@ import frc.robot.constants.CoralConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.3
+ * @Versión: 1.4
  */
 public class CoralSubSystem extends SubsystemBase {
 
@@ -50,6 +53,8 @@ public class CoralSubSystem extends SubsystemBase {
     //PID del motor que pivota el mecanismo del coral
     private PIDController PivotpidController ;
 
+    private SparkMaxConfig pivotMaxConfig;
+
     /**
      * Crea una nueva instancia del {@code CoralSubSystem}, configurando
      * el número de motores de succión y el motor de pivote según las constantes
@@ -64,6 +69,12 @@ public class CoralSubSystem extends SubsystemBase {
         this.pivotmotorEncoder = pivotMotor.getEncoder();
         
         this.PivotpidController = new PIDController(CoralConstants.KP, CoralConstants.KI, CoralConstants.KD);
+        
+        this.pivotMaxConfig = new SparkMaxConfig();
+        
+        pivotMaxConfig.encoder.positionConversionFactor(360/CoralConstants.gearRatio);
+        
+        pivotMotor.configure(pivotMaxConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         
         ResetEncoders();
         
@@ -138,7 +149,7 @@ public class CoralSubSystem extends SubsystemBase {
      */
     public void setPivot2Angle ( double angle) {
 
-        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(), anglesToRotations(angle));
+        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(), angle);
 
         pivotMotor.set(finalOutput);
 
@@ -155,7 +166,7 @@ public class CoralSubSystem extends SubsystemBase {
 
     }
 
-    public double getPosition() {
+    public double getPivotPosition() {
 
         return pivotmotorEncoder.getPosition();
 

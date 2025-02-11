@@ -16,8 +16,8 @@ import frc.robot.constants.CoralConstants;
  *
  * <ul>
  *   <li>motor1 y motor2: Controlan la succión, cada uno girando en sentidos opuestos.</li>
- *   <li>pivotMotor: Controla la inclinación o posición angular del intake.</li>
- *   <li>pivotMotoEncoder: Encargado de medir la posición del motor de pivote.</li>
+ *   <li>pivotMotor1: Controla la inclinación o posición angular del intake.</li>
+ *   <li>pivotMotor1Encoder: Encargado de medir la posición del motor de pivote.</li>
  * </ul>
  *
  * @Funciones principales:
@@ -40,10 +40,12 @@ public class AlgaeSubSystem extends SubsystemBase {
     /** Motor 2 para la succión (intake), girando en sentido inverso a motor1. */
     private SparkMax motor2;
     /** Motor que controla el ángulo o pivote del sistema de intake. */
-    private SparkMax pivotMotor;
+    private SparkMax pivotMotor1;
+    private SparkMax pivotMotor2;
 
     /** Encoder relativo del motor de pivote. */
-    private RelativeEncoder pivotMotoEncoder;
+    private RelativeEncoder pivotMotor1Encoder;
+    private RelativeEncoder pivotMotor2Encoder;
 
     private PIDController PivotpidController ;
 
@@ -56,8 +58,10 @@ public class AlgaeSubSystem extends SubsystemBase {
         this.motor1 = new SparkMax(AlgaeConstants.motor1ID, MotorType.kBrushless);
         this.motor2 = new SparkMax(AlgaeConstants.motor2ID, MotorType.kBrushless);
 
-        this.pivotMotor = new SparkMax(AlgaeConstants.pivotMotorID, MotorType.kBrushless);
-        this.pivotMotoEncoder = pivotMotor.getEncoder();
+        this.pivotMotor1 = new SparkMax(AlgaeConstants.pivotMotor1ID, MotorType.kBrushless);
+        this.pivotMotor2 = new SparkMax(AlgaeConstants.pivotMotor2ID, MotorType.kBrushless);
+        this.pivotMotor1Encoder = pivotMotor1.getEncoder();
+        this.pivotMotor2Encoder = pivotMotor2.getEncoder();
     
         this.PivotpidController = new PIDController ( AlgaeConstants.kp, AlgaeConstants.KI, AlgaeConstants.KD);
     
@@ -86,7 +90,8 @@ public class AlgaeSubSystem extends SubsystemBase {
      * Detiene el motor de pivote, estableciendo su velocidad en 0.
      */
     public void stopPivot() {
-        pivotMotor.set(0);
+        pivotMotor1.set(0);
+        pivotMotor2.set(0);
     }
 
     /**
@@ -96,7 +101,8 @@ public class AlgaeSubSystem extends SubsystemBase {
      * @param Velocity Velocidad a aplicar (rango -1.0 a 1.0).
      */
     public void enablePivot(double Velocity) {
-        pivotMotor.set(Velocity);
+        pivotMotor1.set(Velocity);
+        pivotMotor2.set(-Velocity);
     }
 
     /**
@@ -105,7 +111,7 @@ public class AlgaeSubSystem extends SubsystemBase {
      * @return Valor del encoder del motor de pivote.
      */
     public double getPosition() {
-        return pivotMotoEncoder.getPosition();
+        return pivotMotor1Encoder.getPosition();
     }
 
     /**
@@ -115,14 +121,16 @@ public class AlgaeSubSystem extends SubsystemBase {
     public void stopAll() {
         motor1.set(0);
         motor2.set(0);
-        pivotMotor.set(0);
+        pivotMotor1.set(0);
+        pivotMotor2.set(0);
     }
 
     /**
      * Reinicia (pone a cero) la posición del encoder del pivote.
      */
     public void resetEncoders() {
-        pivotMotoEncoder.setPosition(0);
+        pivotMotor1Encoder.setPosition(0);
+        pivotMotor2Encoder.setPosition(0);
     }
 
     /**
@@ -145,9 +153,11 @@ public class AlgaeSubSystem extends SubsystemBase {
      */
     public void setPivot2Angle ( double angle) {
 
-        double finalOutput = PivotpidController.calculate(pivotMotoEncoder.getPosition(), anglesToRotations(angle));
+        double finalOutput1 = PivotpidController.calculate(pivotMotor1Encoder.getPosition(), anglesToRotations(angle));
+        double finalOutput2 = PivotpidController.calculate(pivotMotor1Encoder.getPosition(), -anglesToRotations(angle));
 
-        pivotMotor.set(finalOutput);
+        pivotMotor1.set(finalOutput1);
+        pivotMotor2.set(finalOutput2);
 
     }
 
@@ -156,9 +166,10 @@ public class AlgaeSubSystem extends SubsystemBase {
      */
     public void resetPosition () {
     
-        double finalOutput = PivotpidController.calculate(pivotMotoEncoder.getPosition(),0);    
+        double finalOutput = PivotpidController.calculate(pivotMotor1Encoder.getPosition(),0);    
 
-        pivotMotor.set(finalOutput);
+        pivotMotor1.set(finalOutput);
+        pivotMotor2.set(finalOutput);
 
     }
 

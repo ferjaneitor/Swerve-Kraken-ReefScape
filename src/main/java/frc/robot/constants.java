@@ -366,7 +366,7 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.24;
+        public static final double KP = 0.25;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
@@ -416,9 +416,9 @@ public class constants {
 
         public static final double L4 = 186;
 
-        public static final double L3 = 124;
+        public static final double L3 = 134;
 
-        public static final double L2 = 85;
+        public static final double L2 = 95;
 
         public static final double L1 = 70;
     }
@@ -452,9 +452,11 @@ public class constants {
 
         public static final double KD = 0;
 
-        public static final double gearRatio = 20;
+        public static final double gearRatio = 100;
 
         public static final Double CoralPivotMaxVelocity = 0.15;
+
+        public static final int motor2ID = 15;
     }
 
     /**
@@ -471,7 +473,8 @@ public class constants {
         /**
          * ID del motor de pivote para el mecanismo Algae, si corresponde.
          */
-        public static final int pivotMotorID = 6;
+        public static final int pivotMotor1ID = 6;
+        public static final int pivotMotor2ID = 15;
 
         /**
          * ID de un segundo motor de intake, si el subsistema Algae lo requiere.
@@ -481,9 +484,9 @@ public class constants {
         /**
          * Velocidad de intake para los motores principales del mecanismo Algae.
          */
-        public static final double intakeVelocity = 0.1;
+        public static final double intakeVelocity = 0.3;
 
-        public static final double AlgaePivotMaxVelocity = 0.2;
+        public static final double AlgaePivotMaxVelocity = 0.1;
 
         public static final double kp = 0.1;
 

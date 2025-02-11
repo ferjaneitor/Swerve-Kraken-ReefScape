@@ -40,7 +40,7 @@ public class CoralPivotResetPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return (coralSubSystem.getPosition()) < AlgaeConstants.TOLERANCE;
+        return (coralSubSystem.getPivotPosition()) < AlgaeConstants.TOLERANCE;
     }
     
 }

@@ -29,10 +29,6 @@ public class DeepCageSubSystem extends SubsystemBase {
      */
     private SparkMax motor1;
 
-    /**
-     * Motor 2 del mecanismo DeepCage.
-     */
-    private SparkMax motor2;
 
     /**
      * Crea una nueva instancia del subsistema DeepCage, inicializando
@@ -48,7 +44,6 @@ public class DeepCageSubSystem extends SubsystemBase {
      */
     public void stopMotors() {
         motor1.set(0);
-        motor2.set(0);
     }
 
     /**

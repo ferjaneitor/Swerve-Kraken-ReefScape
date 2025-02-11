@@ -223,16 +223,16 @@ public class RobotContainer {
         AddOnsController.b().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
         
         //pov Arriba : Se extiende el Elevador hasta L4
-        AddOnsController.povUp().onTrue(new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));
+        AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));
         
         //pov Izquierda : Se extiende el Elevador hasta L1
-        AddOnsController.povLeft().onTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
+        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
         
         //pov Derecho : Se extiende el Elevador hasta L3
-        AddOnsController.povRight().onTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
+        AddOnsController.povRight().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
         
         //pov Abajo : Se extiende el Elevador hasta L2
-        AddOnsController.povDown().onTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
+        AddOnsController.povDown().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
         
         //bumper derecho : Se extiende de manera continua el Elevador
         AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
