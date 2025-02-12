@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Drive.TunerConstants;
 import frc.robot.Elevator.ElevatorCmd;
 import frc.robot.Elevator.ElevatorContinousCmd;
+import frc.robot.Elevator.ElevatorResetPosition;
 import frc.robot.Elevator.ElevatorSubSystem;
 import frc.robot.Intakes.CoralAlgeaContinousIntake;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
@@ -28,7 +29,9 @@ import frc.robot.Intakes.Algae.AlgaePivotCmd;
 import frc.robot.Intakes.Algae.AlgaeSubSystem;
 import frc.robot.Intakes.Coral.CoralContinousInputCmd;
 import frc.robot.Intakes.Coral.CoralPivotCmd;
+import frc.robot.Intakes.Coral.CoralPivotResetPosition;
 import frc.robot.Intakes.Coral.CoralSubSystem;
+import frc.robot.constants.CoralConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.DeepCage.DeepCageCmd;
 import frc.robot.DeepCage.DeepCageSubSystem;
@@ -148,18 +151,22 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser("Test");
         SmartDashboard.putData("Auto Mode", autoChooser);
         
-        NamedCommands.registerCommand("Elevator to L4", new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));   
-        NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));   
-        NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));   
-        NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));   
+        NamedCommands.registerCommand("Elevator to L4", new ElevatorCmd(ElevatorConstants.L4,CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
         
         NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));
         
-        NamedCommands.registerCommand("Coral In", new CoralContinousInputCmd(false, coralSubSystem));
-        NamedCommands.registerCommand("Coral Out", new CoralContinousInputCmd(true, coralSubSystem));
+        NamedCommands.registerCommand("Coral In", new CoralContinousInputCmd(true, coralSubSystem));
+        NamedCommands.registerCommand("Coral Out", new CoralContinousInputCmd(false, coralSubSystem));
         
         NamedCommands.registerCommand("Coral Out and Algae In", new CoralAlgeaContinousIntake(false, algeaSubSystem, coralSubSystem));
+        
+        NamedCommands.registerCommand("Reset Elevator", new ElevatorResetPosition(elevatorSubSystem));
+        
+        NamedCommands.registerCommand("Reset Coral", new CoralPivotResetPosition(coralSubSystem));
         
     }
 
@@ -176,9 +183,9 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
             // Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driverController.getLeftX() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive left with negative X (left)
-                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 1)) // Drive counterclockwise with negative X (left)
+                drive.withVelocityX(-driverController.getLeftY() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 0.8)) // Drive forward with negative Y (forward)
+                    .withVelocityY(-driverController.getLeftX() * MaxSpeed * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 0.8)) // Drive left with negative X (left)
+                    .withRotationalRate(-driverController.getRightX() * MaxAngularRate * (driverController.leftBumper().getAsBoolean() == true? 0.2 : 0.8)) // Drive counterclockwise with negative X (left)
             )
         );
 
@@ -223,16 +230,16 @@ public class RobotContainer {
         AddOnsController.b().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
         
         //pov Arriba : Se extiende el Elevador hasta L4
-        AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, elevatorSubSystem));
+        AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));
         
         //pov Izquierda : Se extiende el Elevador hasta L1
-        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L1, elevatorSubSystem));
+        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L1, CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));
         
         //pov Derecho : Se extiende el Elevador hasta L3
-        AddOnsController.povRight().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L3, elevatorSubSystem));
+        AddOnsController.povRight().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L3, CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));
         
         //pov Abajo : Se extiende el Elevador hasta L2
-        AddOnsController.povDown().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L2, elevatorSubSystem));
+        AddOnsController.povDown().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L2, CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));
         
         //bumper derecho : Se extiende de manera continua el Elevador
         AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));

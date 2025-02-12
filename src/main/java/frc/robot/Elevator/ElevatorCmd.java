@@ -1,6 +1,8 @@
 package frc.robot.Elevator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Intakes.Coral.CoralSubSystem;
+import frc.robot.constants.CoralConstants;
 import frc.robot.constants.ElevatorConstants;
 
 /**
@@ -28,10 +30,14 @@ public class ElevatorCmd extends Command {
      */
     private double targetMeters;
 
+    private double targetAngleDeg;
+
     /**
      * Subsistema de elevador que gestiona la lógica y el hardware.
      */
     private ElevatorSubSystem elevatorSubSystem;
+
+    private CoralSubSystem coralSubSystem;
 
     /**
      * Crea una nueva instancia de {@code ElevatorCmd}.
@@ -39,10 +45,15 @@ public class ElevatorCmd extends Command {
      * @param DistanceMeters   Distancia objetivo en metros para el elevador.
      * @param elevatorSubSystem Referencia al subsistema del elevador que se controlará.
      */
-    public ElevatorCmd(double DistanceMeters, ElevatorSubSystem elevatorSubSystem) {
+    public ElevatorCmd(double DistanceMeters, double angleDeg, ElevatorSubSystem elevatorSubSystem, CoralSubSystem coralSubSystem) {
         this.targetMeters = DistanceMeters;
         this.elevatorSubSystem = elevatorSubSystem;
         elevatorSubSystem.ResetEncoders();
+        this.coralSubSystem = coralSubSystem;
+        this.targetAngleDeg = angleDeg;
+        addRequirements(elevatorSubSystem);
+        addRequirements(coralSubSystem);
+        
     }
 
     @Override
@@ -59,6 +70,7 @@ public class ElevatorCmd extends Command {
     public void execute() {
     
         elevatorSubSystem.targetHeightFromRotations(targetMeters);
+        coralSubSystem.setPivot2Angle(targetAngleDeg);
     
     }
 
@@ -89,6 +101,9 @@ public class ElevatorCmd extends Command {
                    < ElevatorConstants.TOLERANCE
                &&
                Math.abs(elevatorSubSystem.getMotor2Position() + (targetMeters - ElevatorConstants.OffSetMeters))
-                   < ElevatorConstants.TOLERANCE;
+                   < ElevatorConstants.TOLERANCE
+               &&
+               Math.abs(coralSubSystem.getPivotPosition() - targetAngleDeg)
+                   < CoralConstants.TOLERANCE;
     }
 }

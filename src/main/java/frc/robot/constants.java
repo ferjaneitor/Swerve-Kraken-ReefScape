@@ -407,7 +407,7 @@ public class constants {
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
          */
-        public static final double GearRatio = 25;
+        public static final double GearRatio =125;
 
         /**
          * Número de etapas (stages) del elevador en tipo cascada.
@@ -416,7 +416,7 @@ public class constants {
 
         public static final double L4 = 186;
 
-        public static final double L3 = 134;
+        public static final double L3 = 144;
 
         public static final double L2 = 95;
 
@@ -457,6 +457,21 @@ public class constants {
         public static final Double CoralPivotMaxVelocity = 0.15;
 
         public static final int motor2ID = 15;
+
+
+        public static final double TOLERANCE = 0.5;
+
+
+        public static final double angleL4 = 50;
+
+
+        public static final double angleL3 = 30;
+
+
+        public static final double angleL2 = 30;
+
+
+        public static final double angleL1 = 30;
     }
 
     /**
