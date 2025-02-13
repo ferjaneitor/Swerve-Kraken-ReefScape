@@ -251,7 +251,7 @@ public class RobotContainer {
         algeaSubSystem.setDefaultCommand( new AlgaePivotCmd(true, algeaSubSystem, ()-> AddOnsController.getRightY()));
         
         // Joystick Izquierdo Eje Y : Se controla que tanto va a pivotar el mecanismo del Coral
-        coralSubSystem.setDefaultCommand(new CoralPivotCmd(true, coralSubSystem, ()-> AddOnsController.getLeftY()));;
+        coralSubSystem.setDefaultCommand(new CoralPivotCmd(false, coralSubSystem, ()-> AddOnsController.getLeftY()));;
 
         
     }

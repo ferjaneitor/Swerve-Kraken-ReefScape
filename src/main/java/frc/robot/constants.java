@@ -366,12 +366,12 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.25;
+        public static final double KP = 0.5;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
          */
-        public static final double KI = 0.03;
+        public static final double KI = 0.02;
 
         /**
          * Constante de ganancia derivativa para el PID del elevador.
@@ -402,12 +402,12 @@ public class constants {
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
          */
-        public static final double ElevatorVelocity = 0.2;
+        public static final double ElevatorVelocity = 0.8;
 
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
          */
-        public static final double GearRatio =125;
+        public static final double GearRatio = 64;
 
         /**
          * Número de etapas (stages) del elevador en tipo cascada.
@@ -455,9 +455,6 @@ public class constants {
         public static final double gearRatio = 100;
 
         public static final Double CoralPivotMaxVelocity = 0.15;
-
-        public static final int motor2ID = 15;
-
 
         public static final double TOLERANCE = 0.5;
 

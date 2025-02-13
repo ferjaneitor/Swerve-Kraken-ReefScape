@@ -31,7 +31,7 @@ import frc.robot.constants.ElevatorConstants;
  * </ul>
  *
  * @Autor:  Fernando Joel Cruz Briones
- * @Versión: 1.5
+ * @Versión: 1.6
  */
 public class ElevatorSubSystem extends SubsystemBase {
 
@@ -140,8 +140,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param targetMeters Cantidad de rotaciones deseadas (positivo para subir, negativo para bajar).
      */
     public void targetHeightFromRotations(double targetMeters) {
-        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
-        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
+        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
+        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
 
         Motor1.setVoltage(motor1Output);
         Motor2.setVoltage(motor2Output);
@@ -180,8 +180,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param Velocity Velocidad deseada (de -1.0 a 1.0, por ejemplo).
      */
     public void setVelocity(double Velocity) {
-        Motor1.set(Velocity);
-        Motor2.set(-Velocity);
+        Motor1.set(-Velocity);
+        Motor2.set(Velocity);
     }
     
      /**
