@@ -361,7 +361,7 @@ public class constants {
         /**
          * Diámetro del sprocket (en pulgadas) que se utiliza en el elevador.
          */
-        public static final double SproketDiameterInches = 1.10;
+        public static final double SproketDiameterInches = 2.5;
 
         /**
          * Constante de ganancia proporcional para el PID del elevador.
