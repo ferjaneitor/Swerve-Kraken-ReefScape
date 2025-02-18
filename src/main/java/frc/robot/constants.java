@@ -366,7 +366,7 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.5;
+        public static final double KP = 0.3;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
@@ -392,17 +392,17 @@ public class constants {
         /**
          * ID del motor 1 (NEO/SparkMax u otro) en el elevador (Derecho).
          */
-        public static final int Motor1ID = 4;
+        public static final int RightMotorID = 4;
 
         /**
          * ID del motor 2 (NEO/SparkMax u otro) en el elevador (Izquierdo).
          */
-        public static final int Motor2ID = 7;
+        public static final int LeftMotorID = 7;
 
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
          */
-        public static final double ElevatorVelocity = 0.8;
+        public static final double ElevatorVelocity = 0.4;
 
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
@@ -421,6 +421,10 @@ public class constants {
         public static final double L2 = 95;
 
         public static final double L1 = 70;
+
+        public static final double MAXVelocity = 0.8;
+
+        public static final double MAXAcceleration = 0.2;
     }
 
     /**

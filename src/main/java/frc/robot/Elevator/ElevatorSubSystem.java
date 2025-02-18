@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
@@ -36,51 +38,73 @@ import frc.robot.constants.ElevatorConstants;
 public class ElevatorSubSystem extends SubsystemBase {
 
     /**
-     * Objeto SparkMax que controla el primer motor del elevador (Motor1).
+     * Objeto SparkMax que controla el primer motor del elevador (RightMotor).
      */
-    private SparkMax Motor1;
+    private SparkMax RightMotor;
 
     /**
-     * Objeto SparkMax que controla el segundo motor del elevador (Motor2).
+     * Objeto SparkMax que controla el segundo motor del elevador (LeftMotor).
      */
-    private SparkMax Motor2;
+    private SparkMax LeftMotor;
 
     /**
-     * Encoder relativo integrado en el primer motor (Motor1).
+     * Encoder relativo integrado en el primer motor (RightMotor).
      */
-    private RelativeEncoder motor1Encoder;
+    private RelativeEncoder RightMotorEncoder;
 
     SparkMaxConfig config ;
 
     /**
-     * Encoder relativo integrado en el segundo motor (Motor2).
+     * Encoder relativo integrado en el segundo motor (LeftMotor).
      */
-    private RelativeEncoder motor2Encoder;
+    private RelativeEncoder LeftMotorEncoder;
 
     /**
-     * Controlador PID para el primer motor (Motor1).
+     * Controlador PID para el primer motor (RightMotor).
      */
-    private PIDController motor1PidController;
+    private PIDController RightMotorPidController;
 
     /**
-     * Controlador PID para el segundo motor (Motor2).
+     * Controlador PID para el segundo motor (LeftMotor).
      */
-    private PIDController motor2PidController;
+    private PIDController LeftMotorPidController;
 
+
+    private ProfiledPIDController trapezoidRightProfiledPIDController;
+    private ProfiledPIDController trapezoidLeftProfiledPIDController;
     /**
      * Construye el subsistema del elevador, inicializando los motores,
      * encoders y controladores PID. También reinicia los encoders para
      * que partan de posición 0.
      */
     public ElevatorSubSystem() {
-        this.Motor1 = new SparkMax(ElevatorConstants.Motor1ID, MotorType.kBrushless);
-        this.Motor2 = new SparkMax(ElevatorConstants.Motor2ID, MotorType.kBrushless);
+        this.RightMotor = new SparkMax(ElevatorConstants.RightMotorID, MotorType.kBrushless);
+        this.LeftMotor = new SparkMax(ElevatorConstants.LeftMotorID, MotorType.kBrushless);
 
-        this.motor1Encoder = Motor1.getEncoder();
-        this.motor2Encoder = Motor2.getEncoder();
+        this.RightMotorEncoder = RightMotor.getEncoder();
+        this.LeftMotorEncoder = LeftMotor.getEncoder();
 
-        this.motor1PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
-        this.motor2PidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        this.RightMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        this.LeftMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        
+        this.trapezoidRightProfiledPIDController = new ProfiledPIDController(
+            ElevatorConstants.KP, 
+            ElevatorConstants.KI, 
+            ElevatorConstants.KD, 
+            new TrapezoidProfile.Constraints(
+                ElevatorConstants.MAXVelocity, 
+                ElevatorConstants.MAXAcceleration
+            )
+        );
+        this.trapezoidLeftProfiledPIDController = new ProfiledPIDController(
+            ElevatorConstants.KP, 
+            ElevatorConstants.KI, 
+            ElevatorConstants.KD, 
+            new TrapezoidProfile.Constraints(
+                ElevatorConstants.MAXVelocity, 
+                ElevatorConstants.MAXAcceleration
+            )
+        );
         
         // Convierte el diámetro del sprocket de pulgadas a centimetros
         double SproketDiameterMeters = ElevatorConstants.SproketDiameterInches * 2.54;
@@ -91,8 +115,8 @@ public class ElevatorSubSystem extends SubsystemBase {
 
         config.encoder.positionConversionFactor((SproketCircumferenceMeters * ElevatorConstants.ElevatorStages ) / ElevatorConstants.GearRatio) ;
 
-        Motor1.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        Motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        RightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        LeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         ResetEncoders();    
     }
@@ -103,8 +127,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * posición de los motores del elevador.
      */
     public void ResetEncoders() {
-        motor1Encoder.setPosition(0);
-        motor2Encoder.setPosition(0);
+        RightMotorEncoder.setPosition(0);
+        LeftMotorEncoder.setPosition(0);
     }
 
     /**
@@ -140,37 +164,50 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param targetMeters Cantidad de rotaciones deseadas (positivo para subir, negativo para bajar).
      */
     public void targetHeightFromRotations(double targetMeters) {
-        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
-        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
+        double RightMotorOutput = RightMotorPidController.calculate(RightMotorEncoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
+        double LeftMotorOutput = LeftMotorPidController.calculate(LeftMotorEncoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
 
-        Motor1.setVoltage(motor1Output);
-        Motor2.setVoltage(motor2Output);
+        RightMotor.setVoltage(RightMotorOutput);
+        LeftMotor.setVoltage(LeftMotorOutput);
+    }
+
+    public void trapezoidalMotionProfeTargetHeight(double targetmeters){
+        
+
+        double RightMotorOutput = trapezoidRightProfiledPIDController.calculate(RightMotorEncoder.getPosition(), targetmeters);
+
+        double LeftMotorOutput = trapezoidLeftProfiledPIDController.calculate(LeftMotorEncoder.getPosition(), targetmeters);
+
+        RightMotor.setVoltage(RightMotorOutput);
+
+        LeftMotor.setVoltage(LeftMotorOutput);
+
     }
 
     /**
      * Detiene los dos motores del elevador estableciendo su velocidad a 0.
      */
     public void stopMotors() {
-        Motor1.set(0);
-        Motor2.set(0);
+        RightMotor.set(0);
+        LeftMotor.set(0);
     }
 
     /**
-     * Obtiene la posición (en rotaciones) del motor 1 (Motor1).
+     * Obtiene la posición (en rotaciones) del motor 1 (RightMotor).
      *
-     * @return Posición actual del encoder de Motor1.
+     * @return Posición actual del encoder de RightMotor.
      */
-    public double getMotor1Position() {
-        return motor1Encoder.getPosition();
+    public double getRightMotorPosition() {
+        return RightMotorEncoder.getPosition();
     }
 
     /**
-     * Obtiene la posición (en rotaciones) del motor 2 (Motor2).
+     * Obtiene la posición (en rotaciones) del motor 2 (LeftMotor).
      *
-     * @return Posición actual del encoder de Motor2.
+     * @return Posición actual del encoder de LeftMotor.
      */
-    public double getMotor2Position() {
-        return motor2Encoder.getPosition();
+    public double getLeftMotorPosition() {
+        return LeftMotorEncoder.getPosition();
     }
 
     /**
@@ -180,8 +217,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param Velocity Velocidad deseada (de -1.0 a 1.0, por ejemplo).
      */
     public void setVelocity(double Velocity) {
-        Motor1.set(-Velocity);
-        Motor2.set(Velocity);
+        RightMotor.set(-Velocity);
+        LeftMotor.set(Velocity);
     }
     
      /**
@@ -189,11 +226,11 @@ public class ElevatorSubSystem extends SubsystemBase {
      */
     public void resetPosition () {
         
-        double motor1Output = motor1PidController.calculate(motor1Encoder.getPosition(), 0);
-        double motor2Output = motor2PidController.calculate(motor2Encoder.getPosition(), 0);
+        double RightMotorOutput = RightMotorPidController.calculate(RightMotorEncoder.getPosition(), 0);
+        double LeftMotorOutput = LeftMotorPidController.calculate(LeftMotorEncoder.getPosition(), 0);
 
-        Motor1.set(motor1Output);
-        Motor2.set(motor2Output);
+        RightMotor.set(RightMotorOutput);
+        LeftMotor.set(LeftMotorOutput);
 
     }    
 }

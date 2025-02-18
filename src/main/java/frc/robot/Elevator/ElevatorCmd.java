@@ -97,10 +97,10 @@ public class ElevatorCmd extends Command {
     @Override
     public boolean isFinished() {
         // Terminar cuando ambos motores alcancen la posición objetivo
-        return Math.abs(elevatorSubSystem.getMotor1Position() + (targetMeters - ElevatorConstants.OffSetMeters))
+        return Math.abs(elevatorSubSystem.getRightMotorPosition() + (targetMeters - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE
                &&
-               Math.abs(elevatorSubSystem.getMotor2Position() - (targetMeters - ElevatorConstants.OffSetMeters))
+               Math.abs(elevatorSubSystem.getLeftMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE
                &&
                Math.abs(coralSubSystem.getPivotPosition() - targetAngleDeg)
