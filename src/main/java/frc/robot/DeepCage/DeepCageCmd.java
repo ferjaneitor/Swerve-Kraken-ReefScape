@@ -4,23 +4,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.DeepCageConstants;
 
 /**
- * @code DeepCageCmd es un comando continuo que controla los motores
- * del subsistema DeepCage a una velocidad fija, determinada por 
- * {@link DeepCageConstants#deepCageVelocity} y una bandera de inversión
- * {@code isInverted}.</p>
+ * DeepCageCmd es un comando continuo que controla los motores del subsistema DeepCage
+ * a una velocidad fija. La velocidad se determina mediante la constante 
+ * DeepCageConstants.deepCageVelocity y la bandera de inversión isInverted.
  *
- * <ul>
- *   <li>En {@code initialize()}, se calcula la velocidad final multiplicando
- *       la velocidad base por -1 si {@code isInverted} es true.</li>
- *   <li>En {@code execute()}, se activan los motores del subsistema con la
- *       velocidad calculada.</li>
- *   <li>En {@code end()}, se detienen los motores.</li>
- *   <li>{@code isFinished()} siempre retorna {@code false}, por lo que este
- *       comando no finaliza de forma autónoma.</li>
- * </ul>
+ * Descripción del funcionamiento:
+ * - En el método initialize(), se calcula la velocidad final multiplicando la velocidad base
+ *   por -1 si isInverted es true.
+ * - En el método execute(), se activan los motores del subsistema aplicando la velocidad calculada.
+ * - En el método end(), se detienen los motores.
+ * - El método isFinished() retorna false, por lo que este comando no finaliza automáticamente.
  *
- * @author:  Fernando Joel Cruz Briones</p>
- * @Versión: 1.0</p>
+ * @Autor: Fernando Joel Cruz Briones
+ * @Versión: 1.0
  */
 public class DeepCageCmd extends Command {
 
@@ -42,18 +38,18 @@ public class DeepCageCmd extends Command {
     /**
      * Crea un nuevo comando para controlar el subsistema DeepCage.
      *
-     * @param isInverted       {@code true} para invertir el sentido de los motores.
+     * @param isInverted        true para invertir el sentido de los motores.
      * @param deepCageSubSystem Subsistema a controlar.
      */
     public DeepCageCmd(boolean isInverted, DeepCageSubSystem deepCageSubSystem) {
         this.deepCageSubSystem = deepCageSubSystem;
         this.isInverted = isInverted;
-         addRequirements(deepCageSubSystem);
+        addRequirements(deepCageSubSystem);
     }
 
     /**
      * Calcula la velocidad final de los motores según la constante
-     * {@link DeepCageConstants#deepCageVelocity} y la bandera {@code isInverted}.
+     * DeepCageConstants.deepCageVelocity y la bandera isInverted.
      */
     @Override
     public void initialize() {
@@ -61,8 +57,8 @@ public class DeepCageCmd extends Command {
     }
 
     /**
-     * Llamado repetidamente mientras el comando está activo. Aplica
-     * la velocidad a los motores de DeepCage.
+     * Se ejecuta repetidamente mientras el comando está activo y aplica
+     * la velocidad calculada a los motores del subsistema.
      */
     @Override
     public void execute() {
@@ -70,8 +66,8 @@ public class DeepCageCmd extends Command {
     }
 
     /**
-     * Se llama cuando el comando finaliza o es interrumpido,
-     * deteniendo los motores del subsistema.
+     * Se llama cuando el comando finaliza o es interrumpido, deteniendo
+     * los motores del subsistema.
      *
      * @param interrupted Indica si el comando terminó de forma normal o fue interrumpido.
      */
@@ -81,9 +77,9 @@ public class DeepCageCmd extends Command {
     }
 
     /**
-     * Retorna siempre {@code false}, este comando no finaliza automáticamente.
+     * Este comando nunca finaliza de forma autónoma.
      *
-     * @return {@code false}.
+     * @return false siempre.
      */
     @Override
     public boolean isFinished() {

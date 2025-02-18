@@ -425,6 +425,9 @@ public class constants {
         public static final double MAXVelocity = 0.8;
 
         public static final double MAXAcceleration = 0.2;
+
+        public static final double FeederHeight = 70;
+
     }
 
     /**
@@ -473,6 +476,9 @@ public class constants {
 
 
         public static final double angleL1 = 30;
+
+
+        public static final double FeederAngle = 0;
     }
 
     /**

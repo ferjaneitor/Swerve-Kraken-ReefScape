@@ -1,27 +1,23 @@
 package frc.robot.Intakes.Algae;
 
 import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AlgaeConstants;
 
 /**
- * @AlgaePivotCmd es un comando continuo que controla la inclinación o pivote
+ * AlgaePivotCmd es un comando continuo que controla la inclinación o pivote
  * del mecanismo de intake (Algae). Permite mover el pivote a una velocidad
- * específica y en una dirección determinada mediante la bandera {@code isInverted}.
- *
- * <ul>
- *   <li>En {@code initialize()}, se calcula la velocidad final según 
- *       {@link AlgaeConstants#pivotMotorVelocity} y el estado {@code isInverted}.</li>
- *   <li>En {@code execute()}, se llama al subsistema para aplicar dicha velocidad
- *       de pivote.</li>
- *   <li>En {@code end()}, se detiene el motor del pivote.</li>
- *   <li>{@code isFinished()} siempre retorna {@code false}, por lo que este comando 
- *       no termina automáticamente, sino que normalmente se interrumpiría 
- *       desde otro comando o evento.</li>
- * </ul>
- *
- * @Autor:  Fernando Joel Cruz Briones
+ * específica y en una dirección determinada mediante la bandera isInverted.
+ * 
+ * Funcionalidades:
+ * - En initialize(), se calcula la velocidad final según la constante pivotMotorVelocity
+ *   (definida en AlgaeConstants) y el estado de isInverted.
+ * - En execute(), se llama al subsistema para aplicar la velocidad calculada al pivote.
+ * - En end(), se detiene el motor del pivote.
+ * - El método isFinished() retorna siempre false, por lo que este comando no termina
+ *   automáticamente, sino que normalmente se interrumpe desde otro comando o evento.
+ * 
+ * @Autor: Fernando Joel Cruz Briones
  * @Versión: 1.1
  */
 public class AlgaePivotCmd extends Command {
@@ -32,25 +28,26 @@ public class AlgaePivotCmd extends Command {
     private boolean isInverted;
 
     /**
-     * Subsistema que controla el mecanismo Algea (intake) y sus partes móviles,
-     * incluido el pivote.
+     * Subsistema que controla el mecanismo Algea (intake) y sus partes móviles, incluido el pivote.
      */
     private AlgaeSubSystem algeaSubSystem;
 
     /**
-     * Velocidad final calculada para el pivote, basada en la constante
-     * {@code pivotMotorVelocity} y la bandera {@code isInverted}.
+     * Velocidad final calculada para el pivote, basada en la constante pivotMotorVelocity y la bandera isInverted.
      */
     private double finalVelocity;
 
-    // Supplier que nos brinda la velocidad atravez del joystick derecho en el eje y
-    private Supplier<Double> yJoystickSupplier ;
+    /**
+     * Proveedor que devuelve el valor del joystick en el eje Y.
+     */
+    private Supplier<Double> yJoystickSupplier;
 
     /**
      * Crea un nuevo comando para ajustar la inclinación/pivote de Algea.
      *
-     * @param isInverted    Indica si la dirección del pivote debe invertirse.
-     * @param algeaSubSystem Instancia del subsistema Algea a controlar.
+     * @param invertDirection  true para invertir la dirección del pivote.
+     * @param algeaSubSystem   Instancia del subsistema Algea a controlar.
+     * @param yJoystickSupplier Proveedor del valor del joystick en el eje Y.
      */
     public AlgaePivotCmd(boolean invertDirection, AlgaeSubSystem algeaSubSystem, Supplier<Double> yJoystickSupplier) {
         this.algeaSubSystem = algeaSubSystem;
@@ -60,9 +57,8 @@ public class AlgaePivotCmd extends Command {
     }
 
     /**
-     * Calcula la velocidad final que se aplicará al pivote,
-     * multiplicando la constante {@code pivotMotorVelocity}
-     * por -1 si {@code isInverted} es true.
+     * Inicializa el comando.
+     * (No se realiza acción adicional en este método.)
      */
     @Override
     public void initialize() {
@@ -70,27 +66,27 @@ public class AlgaePivotCmd extends Command {
 
     /**
      * Llamado repetidamente mientras el comando está activo.
-     * Establece la velocidad del pivote en {@code finalVelocity}.
+     * Calcula y aplica la velocidad al pivote:
+     * - La velocidad final se calcula multiplicando el valor del joystick por AlgaeConstants.AlgaePivotMaxVelocity
+     *   y se invierte si isInverted es true.
+     * - Si el valor del joystick es mayor o igual a 0.2 o menor o igual a -0.2, se activa el pivote con la velocidad calculada.
+     * - En caso contrario, se detiene el pivote.
      */
     @Override
     public void execute() {
-        
         finalVelocity = (yJoystickSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity) * (isInverted ? -1 : 1);
-        
-        if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2){
+
+        if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2) {
             algeaSubSystem.enablePivot(finalVelocity);
-        }else {
+        } else {
             algeaSubSystem.stopPivot();
         }
-        
     }
 
     /**
-     * Se llama al terminar o interrumpir el comando, deteniendo
-     * el motor del pivote.
+     * Se llama al terminar o interrumpir el comando, deteniendo el motor del pivote.
      *
-     * @param interrupted Indica si el comando terminó de manera
-     *                    normal o fue interrumpido.
+     * @param interrupted Indica si el comando terminó de forma normal o fue interrumpido.
      */
     @Override
     public void end(boolean interrupted) {
@@ -99,10 +95,8 @@ public class AlgaePivotCmd extends Command {
 
     /**
      * Retorna false para indicar que este comando no termina por sí solo.
-     * Generalmente se interrumpe desde otro comando o cuando el robot
-     * cambia de estado.
      *
-     * @return false siempre
+     * @return false siempre.
      */
     @Override
     public boolean isFinished() {

@@ -23,6 +23,7 @@ import frc.robot.Elevator.ElevatorCmd;
 import frc.robot.Elevator.ElevatorContinousCmd;
 import frc.robot.Elevator.ElevatorResetPosition;
 import frc.robot.Elevator.ElevatorSubSystem;
+import frc.robot.Elevator.ElevatorTrapezoidCmd;
 import frc.robot.Intakes.CoralAlgeaContinousIntake;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
 import frc.robot.Intakes.Algae.AlgaePivotCmd;
@@ -39,30 +40,23 @@ import frc.robot.Drive.CommandSwerveDrivetrain;
 
 /**
  * RobotContainer
- *
- * @Clase que configura la integración del robot, especialmente en proyectos FRC
- * basados en WPILib. Incluye:
- *
- * <ul>
- *   <li>Creación y asignación de comandos por defecto al subsistema de swerve.</li>
- *   <li>Mapeo de botones del control de Xbox para distintas funciones:
- *       freno, orientación de ruedas, SysId y reinicio de heading.</li>
- *   <li>Selección de rutinas de autonomía (autoChooser) integradas con PathPlanner.</li>
- *   <li>Registro de telemetría en {@link Telemetry} para log de datos de swerve.</li>
- * </ul>
- *
- *<p>Esta clase {@code RobotContainer} se encarga de:
- * <ol>
- *   <li>Definir y configurar el subsistema principal de tracción {@code drivetrain} (Swerve).
- *   <li>Asignar comandos por defecto y atajos de botones del control de Xbox.
- *   <li>Configurar la selección de rutinas de autonomía usando {@link AutoBuilder}.</li>
- *   <li>Registrar telemetría personalizada.</li>
- * </ol>
- *
- * @Autor:  Fernando Joel Cruz Briones
+ * 
+ * Esta clase configura la integración del robot, especialmente en proyectos FRC basados en WPILib.
+ * Incluye:
+ * - Creación y asignación de comandos por defecto al subsistema de swerve.
+ * - Mapeo de botones del control de Xbox para distintas funciones: freno, orientación de ruedas, SysId y reinicio de heading.
+ * - Selección de rutinas de autonomía (autoChooser) integradas con PathPlanner.
+ * - Registro de telemetría en Telemetry para log de datos de swerve.
+ * 
+ * Esta clase se encarga de:
+ *  1. Definir y configurar el subsistema principal de tracción (drivetrain) (Swerve).
+ *  2. Asignar comandos por defecto y atajos de botones del control de Xbox.
+ *  3. Configurar la selección de rutinas de autonomía usando AutoBuilder.
+ *  4. Registrar telemetría personalizada.
+ * 
+ * @Autor: Fernando Joel Cruz Briones
  * @Versión: 1.3
-*/
-
+ */
 public class RobotContainer {
 
     /**
@@ -155,6 +149,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Feeder Position", new ElevatorTrapezoidCmd(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
         
         NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));
@@ -253,6 +248,8 @@ public class RobotContainer {
         // Joystick Izquierdo Eje Y : Se controla que tanto va a pivotar el mecanismo del Coral
         coralSubSystem.setDefaultCommand(new CoralPivotCmd(false, coralSubSystem, ()-> AddOnsController.getLeftY()));;
 
+        // Trigger Derecho : Se posiciona el elevador y el coral para nada mas recivir del feeder
+        AddOnsController.rightTrigger().onTrue(new ElevatorTrapezoidCmd(ElevatorConstants.FeederHeight, CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));
         
     }
 

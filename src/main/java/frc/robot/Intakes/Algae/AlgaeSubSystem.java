@@ -3,34 +3,30 @@ package frc.robot.Intakes.Algae;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.AlgaeConstants;
 import frc.robot.constants.CoralConstants;
 
 /**
- * @AlgeaSubSystem es el subsistema que gestiona los motores y el pivote del
- * mecanismo de intake "Algea". Permite activar y desactivar la succión (intake)
- * y controlar la posición/velocidad del pivote.
+ * AlgeaSubSystem es el subsistema que gestiona los motores y el pivote del mecanismo
+ * de intake "Algea". Permite activar y desactivar la succión (intake) y controlar la
+ * posición y velocidad del pivote.
  *
- * <ul>
- *   <li>motor1 y motor2: Controlan la succión, cada uno girando en sentidos opuestos.</li>
- *   <li>pivotMotor1: Controla la inclinación o posición angular del intake.</li>
- *   <li>pivotMotor1Encoder: Encargado de medir la posición del motor de pivote.</li>
- * </ul>
+ * Elementos:
+ * - motor1 y motor2: Controlan la succión, cada uno girando en sentidos opuestos.
+ * - pivotMotor1: Controla la inclinación o posición angular del intake.
+ * - pivotMotor1Encoder: Mide la posición del motor de pivote.
  *
- * @Funciones principales:
- * <ul>
- *   <li><strong>enableAlgaeIntake:</strong> Activa el intake con la velocidad dada.</li>
- *   <li><strong>stopAlgaeIntake:</strong> Detiene los motores de succión.</li>
- *   <li><strong>enablePivot:</strong> Aplica la velocidad al pivote.</li>
- *   <li><strong>stopPivot:</strong> Detiene el motor de pivote.</li>
- *   <li><strong>resetEncoders:</strong> Reinicia la posición del encoder del pivote a 0.</li>
- *   <li><strong>stopAll:</strong> Detiene todos los motores (succión y pivote).</li>
- * </ul>
+ * Funciones principales:
+ * - enableAlgaeIntake: Activa el intake con la velocidad dada.
+ * - stopAlgaeIntake: Detiene los motores de succión.
+ * - enablePivot: Aplica la velocidad al pivote.
+ * - stopPivot: Detiene el motor de pivote.
+ * - resetEncoders: Reinicia la posición del encoder del pivote a 0.
+ * - stopAll: Detiene todos los motores (succión y pivote).
  *
- * @Autor:  Fernando Joel Cruz Briones
+ * @Autor: Fernando Joel Cruz Briones
  * @Versión: 1.1
  */
 public class AlgaeSubSystem extends SubsystemBase {
@@ -47,12 +43,11 @@ public class AlgaeSubSystem extends SubsystemBase {
     private RelativeEncoder pivotMotor1Encoder;
     private RelativeEncoder pivotMotor2Encoder;
 
-    private PIDController PivotpidController ;
+    private PIDController PivotpidController;
 
     /**
      * Constructor del subsistema Algea. Inicializa los motores para la succión
-     * y el motor/encoder del pivote con sus IDs configurados en
-     * {@link AlgaeConstants}.
+     * y el motor/encoder del pivote con los IDs configurados en AlgaeConstants.
      */
     public AlgaeSubSystem() {
         this.motor1 = new SparkMax(AlgaeConstants.motor1ID, MotorType.kBrushless);
@@ -63,15 +58,14 @@ public class AlgaeSubSystem extends SubsystemBase {
         this.pivotMotor1Encoder = pivotMotor1.getEncoder();
         this.pivotMotor2Encoder = pivotMotor2.getEncoder();
     
-        this.PivotpidController = new PIDController ( AlgaeConstants.kp, AlgaeConstants.KI, AlgaeConstants.KD);
-    
+        this.PivotpidController = new PIDController(AlgaeConstants.kp, AlgaeConstants.KI, AlgaeConstants.KD);
     }
 
     /**
-     * Activa los motores de succión con la velocidad especificada. 
+     * Activa los motores de succión con la velocidad especificada.
      * Se invierte el segundo motor para que ambos trabajen en sentidos opuestos.
      *
-     * @param Velocity Velocidad a aplicar (rango típico -1.0 a 1.0).
+     * @param Velocity Velocidad a aplicar (rango típico: -1.0 a 1.0).
      */
     public void enableAlgaeIntake(double Velocity) {
         motor1.set(Velocity);
@@ -87,7 +81,7 @@ public class AlgaeSubSystem extends SubsystemBase {
     }
 
     /**
-     * Detiene el motor de pivote, estableciendo su velocidad en 0.
+     * Detiene los motores de pivote, estableciendo sus velocidades en 0.
      */
     public void stopPivot() {
         pivotMotor1.set(0);
@@ -95,10 +89,9 @@ public class AlgaeSubSystem extends SubsystemBase {
     }
 
     /**
-     * Aplica la velocidad dada al motor de pivote, ajustando el ángulo 
-     * del mecanismo de intake.
+     * Aplica la velocidad dada al motor de pivote, ajustando el ángulo del mecanismo de intake.
      *
-     * @param Velocity Velocidad a aplicar (rango -1.0 a 1.0).
+     * @param Velocity Velocidad a aplicar (rango: -1.0 a 1.0).
      */
     public void enablePivot(double Velocity) {
         pivotMotor1.set(Velocity);
@@ -115,8 +108,7 @@ public class AlgaeSubSystem extends SubsystemBase {
     }
 
     /**
-     * Detiene todos los motores (los de succión y el pivote), estableciendo sus
-     * velocidades en 0.
+     * Detiene todos los motores (de succión y de pivote), estableciendo sus velocidades en 0.
      */
     public void stopAll() {
         motor1.set(0);
@@ -126,7 +118,7 @@ public class AlgaeSubSystem extends SubsystemBase {
     }
 
     /**
-     * Reinicia (pone a cero) la posición del encoder del pivote.
+     * Reinicia (pone a cero) la posición de los encoders del pivote.
      */
     public void resetEncoders() {
         pivotMotor1Encoder.setPosition(0);
@@ -134,43 +126,35 @@ public class AlgaeSubSystem extends SubsystemBase {
     }
 
     /**
-     * @param angle : Angulo deseado
-     * 
-     * Calcula las rotaciones necesarias para llegar al angulo deseado
+     * Calcula las rotaciones necesarias para alcanzar el ángulo deseado.
+     *
+     * @param angle Ángulo deseado.
+     * @return Rotaciones necesarias para alcanzar el ángulo.
      */
-    public double anglesToRotations ( Double angle ) {
-
-        double rotations = angle / 360 ;
-
-        rotations *= CoralConstants.gearRatio ;
-
+    public double anglesToRotations(Double angle) {
+        double rotations = angle / 360;
+        rotations *= CoralConstants.gearRatio;
         return rotations;
-
     }   
 
-     /**
-     * Con PID se posiciona en el angulo deseado el mecanismo del coral
+    /**
+     * Posiciona el mecanismo del intake en el ángulo deseado utilizando PID.
+     *
+     * @param angle Ángulo deseado.
      */
-    public void setPivot2Angle ( double angle) {
-
+    public void setPivot2Angle(double angle) {
         double finalOutput1 = PivotpidController.calculate(pivotMotor1Encoder.getPosition(), anglesToRotations(angle));
         double finalOutput2 = PivotpidController.calculate(pivotMotor1Encoder.getPosition(), -anglesToRotations(angle));
-
         pivotMotor1.set(finalOutput1);
         pivotMotor2.set(finalOutput2);
-
     }
 
     /**
-     * Se reinicia la posicion del mecanismo del coral
+     * Reinicia la posición del mecanismo del intake utilizando PID.
      */
-    public void resetPosition () {
-    
-        double finalOutput = PivotpidController.calculate(pivotMotor1Encoder.getPosition(),0);    
-
+    public void resetPosition() {
+        double finalOutput = PivotpidController.calculate(pivotMotor1Encoder.getPosition(), 0);
         pivotMotor1.set(finalOutput);
         pivotMotor2.set(finalOutput);
-
     }
-
 }

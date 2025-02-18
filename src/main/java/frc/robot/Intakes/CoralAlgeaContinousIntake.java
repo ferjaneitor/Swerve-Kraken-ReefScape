@@ -6,24 +6,19 @@ import frc.robot.Intakes.Algae.AlgaeSubSystem;
 import frc.robot.Intakes.Coral.CoralSubSystem;
 
 /**
- * @{@code CoralAlgeaContinousIntake} es un comando continuo que activa
- * simultáneamente la succión (intake) de los subsistemas Algea y Coral.
- * Permite controlar la dirección (invertida o no) de ambos intakes mediante
- * la variable {@code isInverted}.
+ * CoralAlgeaContinousIntake es un comando continuo que activa simultáneamente
+ * la succión (intake) de los subsistemas Algea y Coral. Permite controlar la dirección
+ * (invertida o no) de ambos intakes mediante la variable isInverted.
  *
- * <ul>
- *   <li>En {@code initialize()}, se calcula la velocidad final a partir de 
- *       {@link constants#CoralAlgaeFinalVelocity} y la bandera {@code isInverted}.</li>
- *   <li>En {@code execute()}, se activa el intake de Algea con 
- *       {@code finalVelocity} y el de Coral con {@code -finalVelocity}, 
- *       permitiendo que ambos subsistemas trabajen de forma conjunta 
- *       (posiblemente en sentidos opuestos).</li>
- *   <li>En {@code end()}, se detienen ambos intakes.</li>
- *   <li>{@code isFinished()} siempre retorna {@code false}, lo que significa 
- *       que este comando no concluye por sí solo y debe ser interrumpido.</li>
- * </ul>
+ * Descripción:
+ * - En initialize(), se calcula la velocidad final a partir de constants.CoralAlgaeFinalVelocity
+ *   y la bandera isInverted.
+ * - En execute(), se activa el intake de Algea con finalVelocity y el de Coral con -finalVelocity,
+ *   permitiendo que ambos subsistemas trabajen de forma conjunta (posiblemente en sentidos opuestos).
+ * - En end(), se detienen ambos intakes.
+ * - El método isFinished() retorna siempre false, lo que significa que este comando no concluye por sí solo.
  *
- * @Autor:  Fernando Joel Cruz Briones
+ * @Autor: Fernando Joel Cruz Briones
  * @Versión: 1.1
  */
 public class CoralAlgeaContinousIntake extends Command {
@@ -44,17 +39,15 @@ public class CoralAlgeaContinousIntake extends Command {
     private CoralSubSystem coralSubSystem;
 
     /**
-     * Velocidad final que se aplicará a los motores, calculada con base
-     * en {@link constants#CoralAlgaeFinalVelocity} y la bandera 
-     * {@code isInverted}.
+     * Velocidad final que se aplicará a los motores, calculada con base en
+     * constants.CoralAlgaeFinalVelocity y la bandera isInverted.
      */
     private double finalVelocity;
 
     /**
-     * Construye un comando continuo para accionar de forma simultánea
-     * los intakes de Algea y Coral.
+     * Construye un comando continuo para accionar de forma simultánea los intakes de Algea y Coral.
      *
-     * @param isInverted       {@code true} para invertir la dirección de los intakes.
+     * @param isInverted       true para invertir la dirección de los intakes.
      * @param algeaSubSystem   Subsistema de Algea que maneja sus motores de intake.
      * @param coralSubSystem   Subsistema de Coral que maneja sus motores de intake.
      */
@@ -65,8 +58,8 @@ public class CoralAlgeaContinousIntake extends Command {
     }
 
     /**
-     * Inicializa el comando, calculando la velocidad final según 
-     * {@link constants#CoralAlgaeFinalVelocity} y la inversión de dirección.
+     * Inicializa el comando, calculando la velocidad final según constants.CoralAlgaeFinalVelocity
+     * y la inversión de dirección.
      */
     @Override
     public void initialize() {
@@ -74,9 +67,8 @@ public class CoralAlgeaContinousIntake extends Command {
     }
 
     /**
-     * Se llama repetidamente mientras el comando está activo. Activa
-     * el subsistema Algea con {@code finalVelocity} y el subsistema
-     * Coral con la velocidad opuesta, {@code -finalVelocity}.
+     * Se llama repetidamente mientras el comando está activo. Activa el subsistema Algea
+     * con finalVelocity y el subsistema Coral con -finalVelocity.
      */
     @Override
     public void execute() {
@@ -96,9 +88,9 @@ public class CoralAlgeaContinousIntake extends Command {
     }
 
     /**
-     * El comando nunca finaliza por sí solo; retorna siempre {@code false}.
+     * Este comando nunca finaliza por sí solo; retorna siempre false.
      *
-     * @return Siempre {@code false}.
+     * @return false.
      */
     @Override
     public boolean isFinished() {

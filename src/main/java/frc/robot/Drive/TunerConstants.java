@@ -8,8 +8,13 @@ import com.ctre.phoenix6.hardware.*;
 import com.ctre.phoenix6.signals.*;
 import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
@@ -20,36 +25,29 @@ import frc.robot.constants.drivetrainConstants;
 /**
  * TunerConstants
  * 
- * <p>Clase que gestiona la configuración y constantes necesarias para
- * implementar un sistema de Swerve Drive con la API Phoenix 6 de
- * CTR Electronics (TalonFX, CANCoder, Pigeon2, etc.).</p>
- *
- * <p>Provee las ganancias (PID/Feedforward), relaciones de engranaje,
- * configuraciones de limitación de corriente, tipos de bucle cerrado,
- * y coordenadas de cada módulo (rueda) del robot. También incluye
- * la creación de un objeto {@link CommandSwerveDrivetrain} que
- * integra todos estos componentes para la conducción.</p>
- *
- * @author  Fernando Joel Cruz Briones
- * @version 1.0
+ * Esta clase gestiona la configuración y las constantes necesarias para implementar un sistema de Swerve Drive
+ * utilizando la API Phoenix 6 de CTR Electronics (TalonFX, CANCoder, Pigeon2, etc.).
+ * 
+ * Provee las ganancias (PID/Feedforward), relaciones de engranaje, configuraciones de limitación de corriente,
+ * tipos de bucle cerrado y coordenadas de cada módulo (rueda) del robot. Además, incluye la creación de un objeto
+ * CommandSwerveDrivetrain que integra todos estos componentes para la conducción.
+ * 
+ * Autor:  Fernando Joel Cruz Briones
+ * Versión: 1.0
+ * 
+ * Generado por Tuner X Swerve Project Generator
+ * https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
  */
-
-// Generado por Tuner X Swerve Project Generator
-// https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/tuner-swerve/index.html
 @SuppressWarnings("unused")
 public class TunerConstants {
     
-    /**
-     * Configuraciones de la ranura 0 (Slot0Configs) para los motores de dirección (steer).
-     * En esta configuración se definen los valores de control PID:
-     * <ul>
-     *   <li>KP: Ganancia Proporcional</li>
-     *   <li>KI: Ganancia Integral</li>
-     *   <li>KD: Ganancia Derivativa</li>
-     *   <li>KS, KV, KA: Parámetros de feedforward</li>
-     *   <li>StaticFeedforwardSign: Determina el signo del feedforward</li>
-     * </ul>
-     */
+    // Configuraciones de la ranura 0 para los motores de dirección (steer).
+    // Se definen los valores de control PID:
+    // - KP: Ganancia Proporcional
+    // - KI: Ganancia Integral
+    // - KD: Ganancia Derivativa
+    // - KS, KV, KA: Parámetros de feedforward
+    // - StaticFeedforwardSign: Determina el signo del feedforward
     private static final Slot0Configs steerGains = new Slot0Configs()
         .withKP(drivetrainConstants.Slot0ConfigSteerGainsWithKP)
         .withKI(drivetrainConstants.Slot0ConfigSteerGainsWithKI)
@@ -59,11 +57,8 @@ public class TunerConstants {
         .withKA(drivetrainConstants.Slot0ConfigSteerGainsWithKA)
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     
-    /**
-     * Configuraciones de la ranura 0 (Slot0Configs) para los motores de propulsión (drive).
-     * Similar a la configuración de dirección, pero con sus propios valores
-     * de PID y feedforward adecuados para la parte de tracción.
-     */
+    // Configuraciones de la ranura 0 para los motores de propulsión (drive).
+    // Similar a la configuración de dirección, pero con valores de PID y feedforward adecuados para tracción.
     private static final Slot0Configs driveGains = new Slot0Configs()
         .withKP(drivetrainConstants.Slot0ConfigDriveGainsWithKP)
         .withKI(drivetrainConstants.Slot0ConfigDriveGainsWithKI)
@@ -71,101 +66,58 @@ public class TunerConstants {
         .withKS(drivetrainConstants.Slot0ConfigDriveGainsWithKS)
         .withKV(drivetrainConstants.Slot0ConfigDriveGainsWithKV);
 
-    /**
-     * Tipo de control en bucle cerrado para los motores de dirección (steer).
-     * En este caso, se utiliza {@code ClosedLoopOutputType.Voltage},
-     * es decir, control basado en voltaje.
-     */
+    // Tipo de control en bucle cerrado para los motores de dirección (steer). Se usa control basado en voltaje.
     private static final ClosedLoopOutputType kSteerClosedLoopOutput = ClosedLoopOutputType.Voltage;
     
-    /**
-     * Tipo de control en bucle cerrado para los motores de propulsión (drive).
-     * También se establece en control por voltaje.
-     */
+    // Tipo de control en bucle cerrado para los motores de propulsión (drive). También se establece en control por voltaje.
     private static final ClosedLoopOutputType kDriveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
-    /**
-     * Tipo de motor usado para la propulsión (drive). Aquí se define que
-     * se utiliza un TalonFX (Falcon 500) con codificador integrado.
-     */
+    // Tipo de motor usado para la propulsión (drive). Se utiliza un TalonFX (Falcon 500) con codificador integrado.
     private static final DriveMotorArrangement kDriveMotorType = DriveMotorArrangement.TalonFX_Integrated;
     
-    /**
-     * Tipo de motor usado para la dirección (steer). Igualmente un TalonFX con
-     * codificador integrado.
-     */
+    // Tipo de motor usado para la dirección (steer). También se utiliza un TalonFX con codificador integrado.
     private static final SteerMotorArrangement kSteerMotorType = SteerMotorArrangement.TalonFX_Integrated;
 
-     /**
-     * Tipo de retroalimentación (feedback) para los motores de dirección.
-     * {@code FusedCANcoder} combina datos del encoder integrado y el CANCoder.
-     * En caso de no tener licencia Pro, se hace fallback a {@code RemoteCANcoder}.
-     */
+    // Tipo de retroalimentación para los motores de dirección.
+    // FusedCANcoder combina datos del encoder integrado y el CANCoder. Si no se tiene licencia Pro, se hace fallback a RemoteCANcoder.
     private static final SteerFeedbackType kSteerFeedbackType = SteerFeedbackType.FusedCANcoder;
 
-    /**
-     * Corriente de deslizamiento (slip) que se utiliza para detectar cuando
-     * la rueda está patinando. Este valor se debe ajustar según el robot.
-     */
+    // Corriente de deslizamiento (slip) para detectar cuando la rueda está patinando.
     private static final Current kSlipCurrent = Amps.of(drivetrainConstants.kSlipCurrentAmp);
 
-     /**
-     * Configuración inicial para el motor de propulsión (drive).
-     * Aquí se dejan valores por defecto.
-     */
+    // Configuración inicial para el motor de propulsión (drive). Se dejan valores por defecto.
     private static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
     
-    /**
-     * Configuración inicial para el motor de dirección (steer).
-     * En este ejemplo, se establece un límite de corriente de estator
-     * relativamente bajo, dado que la dirección no requiere tanto torque.
-     */
+    // Configuración inicial para el motor de dirección (steer). Se establece un límite de corriente de estator bajo, ya que la dirección no requiere tanto torque.
     private static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
         .withCurrentLimits(
             new CurrentLimitsConfigs()
-                // Swerve azimuth does not require much torque output, so we can set a relatively low
-                // stator current limit to help avoid brownouts without impacting performance.
                 .withStatorCurrentLimit(Amps.of(drivetrainConstants.StatorCurrentLimitAmps))
                 .withStatorCurrentLimitEnable(drivetrainConstants.StatorCurrentLimitEnable)
         );
     
-    /**
-     * Configuración inicial para el CANCoder (encoder de azimut o dirección).
-     */
+    // Configuración inicial para el CANCoder (encoder de azimut o dirección).
     private static final CANcoderConfiguration encoderInitialConfigs = new CANcoderConfiguration();
     
-    /**
-     * Configuración para el giroscopio Pigeon2. En este caso se deja en null,
-     * lo que significa que no se aplican configuraciones adicionales.
-     */
+    // Configuración para el giroscopio Pigeon2. Se deja en null, sin configuraciones adicionales.
     private static final Pigeon2Configuration pigeonConfigs = null;
 
-    /**
-     * CANBus a utilizar. Normalmente, todos los dispositivos de swerve
-     * (motores, encoders) deben compartir el mismo bus CAN.
-     * Se define además una ruta para logs (opcional).
-     */
+    // CANBus a utilizar. Normalmente, todos los dispositivos de swerve deben compartir el mismo bus CAN.
+    // Se define además una ruta para logs (opcional).
     public static final CANBus kCANBus = new CANBus(drivetrainConstants.CANivoreCanBusName, "./logs/example.hoot");
 
-    /**
-     * Velocidad teórica (en m/s) con 12 V aplicados directamente a los motores.
-     * Este valor se usa en los cálculos de feedforward y depende de cada robot.
-     */
+    // Velocidad teórica (en m/s) con 12 V aplicados directamente a los motores.
+    // Este valor se usa en los cálculos de feedforward y depende de cada robot.
     public static final LinearVelocity kSpeedAt12Volts = MetersPerSecond.of(drivetrainConstants.kSpeedAt12Volts);
 
-    /**
-     * Constantes generales del tren motriz swerve.
-     * Se establece el ID del Pigeon2 y el nombre del CANBus.
-     */
+    // Constantes generales del tren motriz swerve.
+    // Se establece el ID del Pigeon2 y el nombre del CANBus.
     public static final SwerveDrivetrainConstants DrivetrainConstants = new SwerveDrivetrainConstants()
             .withCANBusName(kCANBus.getName())
             .withPigeon2Id(drivetrainConstants.kPigeonId)
             .withPigeon2Configs(pigeonConfigs);
 
-    /**
-     * Fábrica para crear las configuraciones de los módulos de Swerve
-     * (drive + steer + encoder) utilizando los parámetros definidos.
-     */
+    // Fábrica para crear las configuraciones de los módulos de Swerve (drive, steer y encoder) utilizando los parámetros definidos.
     private static final SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> ConstantCreator =
         new SwerveModuleConstantsFactory<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>()
             .withDriveMotorGearRatio(drivetrainConstants.kDriveGearRatio)
@@ -189,11 +141,7 @@ public class TunerConstants {
             .withSteerFrictionVoltage(drivetrainConstants.kSteerFrictionVoltage)
             .withDriveFrictionVoltage(drivetrainConstants.kDriveFrictionVoltage);
     
-    /**
-     * Configuraciones del módulo swerve de la rueda Front-Left (delantera izquierda).
-     * Incluye IDs de motor de dirección, propulsión, CANCoder,
-     * offset del encoder, posición física (X, Y) y banderas de inversión.
-     */
+    // Configuración del módulo swerve de la rueda Front-Left (delantera izquierda).
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
             drivetrainConstants.kFrontLeftSteerMotorId,
@@ -207,9 +155,7 @@ public class TunerConstants {
             drivetrainConstants.kFrontLeftEncoderInverted
         );
     
-    /**
-     * Configuraciones del módulo swerve de la rueda Front-Right (delantera derecha).
-     */
+    // Configuración del módulo swerve de la rueda Front-Right (delantera derecha).
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontRight =
         ConstantCreator.createModuleConstants(
             drivetrainConstants.kFrontRightSteerMotorId, 
@@ -223,9 +169,7 @@ public class TunerConstants {
             drivetrainConstants.kFrontRightEncoderInverted
         );
     
-    /**
-     * Configuraciones del módulo swerve de la rueda Back-Left (trasera izquierda).
-     */
+    // Configuración del módulo swerve de la rueda Back-Left (trasera izquierda).
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackLeft =
         ConstantCreator.createModuleConstants(
             drivetrainConstants.kBackLeftSteerMotorId, 
@@ -239,9 +183,7 @@ public class TunerConstants {
             drivetrainConstants.kBackLeftEncoderInverted
         );
     
-    /**
-     * Configuraciones del módulo swerve de la rueda Back-Right (trasera derecha).
-     */
+    // Configuración del módulo swerve de la rueda Back-Right (trasera derecha).
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> BackRight =
         ConstantCreator.createModuleConstants(
             drivetrainConstants.kBackRightSteerMotorId, 
@@ -256,13 +198,12 @@ public class TunerConstants {
         );
 
     /**
-     * Crea una instancia de {@link CommandSwerveDrivetrain}.
+     * Crea una instancia de CommandSwerveDrivetrain.
      * 
-     * <p>Se recomienda llamar a este método una sola vez en el programa,
-     * típicamente en la clase RobotContainer o similar, para inicializar
-     * el subsistema de conducción.</p>
-     *
-     * @return Una nueva instancia de {@code CommandSwerveDrivetrain}.
+     * Se recomienda llamar a este método una sola vez en el programa, típicamente en RobotContainer,
+     * para inicializar el subsistema de conducción.
+     * 
+     * @return Una nueva instancia de CommandSwerveDrivetrain.
      */
     public static CommandSwerveDrivetrain createDrivetrain() {
         return new CommandSwerveDrivetrain(
@@ -271,21 +212,18 @@ public class TunerConstants {
     }
 
     /**
-     * Clase interna que extiende {@link SwerveDrivetrain} para construir
-     * un chasis swerve utilizando {@link TalonFX} y {@link CANcoder}.
-     * Provee varios constructores para configurar frecuencia de actualización
-     * de odometría y desviaciones estándar para la fusión de sensores.
+     * Clase interna que extiende SwerveDrivetrain para construir un chasis swerve utilizando TalonFX y CANcoder.
+     * Provee varios constructores para configurar la frecuencia de actualización de la odometría y desviaciones estándar
+     * para la fusión de sensores.
      */
     public static class TunerSwerveDrivetrain extends SwerveDrivetrain<TalonFX, TalonFX, CANcoder> {
         
         /**
-         * Constructor principal. Permite inicializar el swerve a partir de
-         * constantes del tren motriz y los módulos (ruedas) específicos.
+         * Constructor principal.
+         * Permite inicializar el swerve a partir de las constantes del tren motriz y los módulos (ruedas) específicos.
          *
-         * @param drivetrainConstants  Constantes y configuraciones generales
-         *                             para el tren motriz.
-         * @param modules              Configuración de cada módulo swerve
-         *                             (rueda) a construir.
+         * @param drivetrainConstants Constantes y configuraciones generales para el tren motriz.
+         * @param modules             Configuración de cada módulo swerve a construir.
          */
         public TunerSwerveDrivetrain(
             SwerveDrivetrainConstants drivetrainConstants,
@@ -294,21 +232,16 @@ public class TunerConstants {
             super(
                 TalonFX::new,     // Función para construir TalonFX de Drive
                 TalonFX::new,     // Función para construir TalonFX de Steer
-                CANcoder::new,    // Función para construir CANCoder
+                CANcoder::new,    // Función para construir CANcoder
                 drivetrainConstants, modules
             );
         }
 
         /**
-         * Constructor que además permite especificar la frecuencia de
-         * actualización para la odometría.
+         * Constructor que permite especificar la frecuencia de actualización de la odometría.
          *
-         * @param drivetrainConstants     Constantes y configuraciones generales
-         *                                para el tren motriz.
-         * @param odometryUpdateFrequency Frecuencia de actualización de la odometría
-         *                                (en Hz). Si se deja en 0, se aplican valores
-         *                                predeterminados (250 Hz en CAN FD, 100 Hz
-         *                                en CAN 2.0).
+         * @param drivetrainConstants     Constantes y configuraciones generales para el tren motriz.
+         * @param odometryUpdateFrequency Frecuencia en Hz para actualizar la odometría.
          * @param modules                 Configuración de cada módulo swerve.
          */
         public TunerSwerveDrivetrain(
@@ -323,15 +256,12 @@ public class TunerConstants {
         }
 
         /**
-         * Constructor que permite además definir desviaciones estándar para la
-         * fusión de la odometría y la visión.
+         * Constructor que permite definir desviaciones estándar para la fusión de la odometría y la visión.
          *
          * @param drivetrainConstants       Constantes generales del tren motriz.
-         * @param odometryUpdateFrequency   Frecuencia de actualización de odometría.
-         * @param odometryStandardDeviation Desviación estándar para la odometría
-         *                                  (matriz de 3x1) en [x, y, theta].
-         * @param visionStandardDeviation   Desviación estándar para la visión
-         *                                  (matriz de 3x1) en [x, y, theta].
+         * @param odometryUpdateFrequency   Frecuencia en Hz para la odometría.
+         * @param odometryStandardDeviation Desviación estándar para la odometría (matriz de 3x1) en [x, y, theta].
+         * @param visionStandardDeviation   Desviación estándar para la visión (matriz de 3x1) en [x, y, theta].
          * @param modules                   Configuración de cada módulo swerve.
          */
         public TunerSwerveDrivetrain(
@@ -343,8 +273,7 @@ public class TunerConstants {
         ) {
             super(
                 TalonFX::new, TalonFX::new, CANcoder::new,
-                drivetrainConstants, odometryUpdateFrequency,
-                odometryStandardDeviation, visionStandardDeviation, modules
+                drivetrainConstants, odometryUpdateFrequency, odometryStandardDeviation, visionStandardDeviation, modules
             );
         }
     }

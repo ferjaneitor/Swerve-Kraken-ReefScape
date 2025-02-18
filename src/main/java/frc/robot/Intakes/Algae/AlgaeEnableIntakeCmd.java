@@ -4,23 +4,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.AlgaeConstants;
 
 /**
- * @AlgaeEnableIntakeCmd es un comando continuo que habilita la succión (intake)
+ * AlgaeEnableIntakeCmd es un comando continuo que habilita la succión (intake)
  * del subsistema Algea a una velocidad fija. El sentido de giro se determina
- * según la bandera {@code isInverted}, pudiendo invertirse para distintas 
- * necesidades (por ejemplo, tomar o expulsar piezas).
+ * según la bandera isInverted, pudiendo invertirse para distintas necesidades
+ * (por ejemplo, tomar o expulsar piezas).
  *
- * <ul>
- *   <li>En {@code initialize()}, se calcula {@code finalVelocity} basándose en
- *       {@link AlgaeConstants#intakeVelocity} y la inversión según {@code isInverted}.</li>
- *   <li>En {@code execute()}, se aplica esa velocidad a los motores del subsistema
- *       para mantener el intake funcionando.</li>
- *   <li>En {@code end()}, se detienen los motores (por ejemplo, cuando se interrumpe
- *       el comando o finaliza el periodo de operación).</li>
- *   <li>{@code isFinished()} siempre retorna {@code false}, indicando que el
- *       comando no concluye automáticamente.</li>
- * </ul>
+ * Detalles:
+ * - En initialize(), se calcula finalVelocity basándose en AlgaeConstants.intakeVelocity
+ *   y la inversión según isInverted.
+ * - En execute(), se aplica esa velocidad a los motores del subsistema para mantener el intake funcionando.
+ * - En end(), se detienen los motores cuando se interrumpe el comando o finaliza el periodo de operación.
+ * - isFinished() siempre retorna false, indicando que el comando no concluye automáticamente.
  *
- * @Autor:  Fernando Joel Cruz Briones
+ * @Autor: Fernando Joel Cruz Briones
  * @Versión: 1.1
  */
 public class AlgaeEnableIntakeCmd extends Command {
@@ -36,16 +32,15 @@ public class AlgaeEnableIntakeCmd extends Command {
     private AlgaeSubSystem algeaSubSystem;
 
     /**
-     * Velocidad final calculada según la constante {@code intakeVelocity}
-     * y el estado de inversión.
+     * Velocidad final calculada según la constante intakeVelocity y el estado de inversión.
      */
     private double finalVelocity;
 
     /**
      * Construye un nuevo comando para habilitar el intake de Algea.
      *
-     * @param isInverted     Indica si se invierte el sentido del motor (true/false).
-     * @param algeaSubSystem Instancia del subsistema Algea a controlar.
+     * @param invertDirection  Indica si se invierte el sentido del motor (true/false).
+     * @param algeaSubSystem   Instancia del subsistema Algea a controlar.
      */
     public AlgaeEnableIntakeCmd(boolean invertDirection, AlgaeSubSystem algeaSubSystem) {
         this.algeaSubSystem = algeaSubSystem;
@@ -55,7 +50,7 @@ public class AlgaeEnableIntakeCmd extends Command {
 
     /**
      * Inicializa el comando, calculando la velocidad final según
-     * {@link AlgaeConstants#intakeVelocity} y la inversión.
+     * AlgaeConstants.intakeVelocity y la inversión.
      */
     @Override
     public void initialize() {
@@ -64,7 +59,7 @@ public class AlgaeEnableIntakeCmd extends Command {
 
     /**
      * Se llama repetidamente mientras el comando está activo.
-     * Ajusta la velocidad del subsistema Algea al valor {@code finalVelocity}.
+     * Ajusta la velocidad del subsistema Algea al valor de finalVelocity.
      */
     @Override
     public void execute() {
@@ -83,9 +78,7 @@ public class AlgaeEnableIntakeCmd extends Command {
     }
 
     /**
-     * Devuelve {@code false} para indicar que este comando no concluye
-     * por sí solo. Normalmente se interrumpe desde otro lugar o por
-     * un cambio de modo del robot.
+     * Devuelve false para indicar que este comando no concluye por sí solo.
      *
      * @return false siempre.
      */

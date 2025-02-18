@@ -2,25 +2,21 @@ package frc.robot.DeepCage;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.DeepCageConstants;
 
 /**
- * @code DeepCageSubSystem es el subsistema que agrupa la lógica y el control
- * de dos motores (SparkMax) para el mecanismo "DeepCage". Provee métodos para
- * habilitar ambos motores a una velocidad dada y detenerlos.</p>
+ * DeepCageSubSystem es el subsistema que agrupa la lógica y el control de los motores
+ * para el mecanismo "DeepCage". Provee métodos para habilitar los motores a una velocidad
+ * dada y para detenerlos.
  *
- * <ul>
- *   <li><strong>motor1, motor2:</strong> Motores que funcionan al unísono para
- *       el mecanismo DeepCage.</li>
- *   <li><strong>enableMotors(double velocity):</strong> Aplica la misma velocidad
- *       a ambos motores.</li>
- *   <li><strong>stopMotors():</strong> Detiene ambos motores (velocidad = 0).</li>
- * </ul>
+ * Descripción:
+ * - motor1, motor2: Motores que funcionan al unísono para el mecanismo DeepCage.
+ * - enableMotors(double velocity): Aplica la misma velocidad a ambos motores.
+ * - stopMotors(): Detiene ambos motores (velocidad = 0).
  *
- * @author:  Fernando Joel Cruz Briones</p>
- * @Versión: 1.0</p>
+ * @Autor: Fernando Joel Cruz Briones
+ * @Versión: 1.0
  */
 public class DeepCageSubSystem extends SubsystemBase {
 
@@ -29,18 +25,16 @@ public class DeepCageSubSystem extends SubsystemBase {
      */
     private SparkMax motor1;
 
-
     /**
      * Crea una nueva instancia del subsistema DeepCage, inicializando
-     * los dos motores (SparkMax) a partir de los IDs definidos en
-     * {@link DeepCageConstants}.
+     * los motores (SparkMax) a partir de los IDs definidos en DeepCageConstants.
      */
     public DeepCageSubSystem() {
         this.motor1 = new SparkMax(DeepCageConstants.motor1ID, MotorType.kBrushless);
     }
 
     /**
-     * Detiene ambos motores del subsistema, estableciendo su velocidad a 0.
+     * Detiene los motores del subsistema, estableciendo su velocidad a 0.
      */
     public void stopMotors() {
         motor1.set(0);
@@ -48,7 +42,7 @@ public class DeepCageSubSystem extends SubsystemBase {
 
     /**
      * Habilita los motores a la velocidad especificada, aplicando el mismo
-     * valor a ambos.
+     * valor a cada uno.
      *
      * @param velocity Velocidad deseada para los motores (rango típico: -1 a 1).
      */
