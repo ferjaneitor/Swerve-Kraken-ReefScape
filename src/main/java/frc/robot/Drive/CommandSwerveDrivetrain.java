@@ -45,7 +45,7 @@ import frc.robot.Drive.TunerConstants.TunerSwerveDrivetrain;
  *   compensando la dirección de cada motor.
  *
  * @Autor: Fernando Joel Cruz Briones
- * @Versión: 1.6
+ * @                                                                            Versión: 1.6
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
 

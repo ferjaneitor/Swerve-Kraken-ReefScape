@@ -157,4 +157,15 @@ public class AlgaeSubSystem extends SubsystemBase {
         pivotMotor1.set(finalOutput);
         pivotMotor2.set(finalOutput);
     }
+    
+    public SparkMax getSparkMax (boolean IsRight) {
+
+        if (IsRight) {
+            return motor1;
+        }else{
+            return motor2;
+        }
+
+    }    
+    
 }

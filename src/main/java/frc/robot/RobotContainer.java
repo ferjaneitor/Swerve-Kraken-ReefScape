@@ -23,13 +23,13 @@ import frc.robot.Elevator.ElevatorCmd;
 import frc.robot.Elevator.ElevatorContinousCmd;
 import frc.robot.Elevator.ElevatorResetPosition;
 import frc.robot.Elevator.ElevatorSubSystem;
-import frc.robot.Elevator.ElevatorTrapezoidCmd;
 import frc.robot.Intakes.CoralAlgeaContinousIntake;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
 import frc.robot.Intakes.Algae.AlgaePivotCmd;
 import frc.robot.Intakes.Algae.AlgaeSubSystem;
 import frc.robot.Intakes.Coral.CoralContinousInputCmd;
 import frc.robot.Intakes.Coral.CoralPivotCmd;
+import frc.robot.Intakes.Coral.CoralPivotPosition;
 import frc.robot.Intakes.Coral.CoralPivotResetPosition;
 import frc.robot.Intakes.Coral.CoralSubSystem;
 import frc.robot.constants.CoralConstants;
@@ -141,15 +141,11 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
         
-        // Carga del chooser para rutinas de PathPlanner
-        autoChooser = AutoBuilder.buildAutoChooser("Test");
-        SmartDashboard.putData("Auto Mode", autoChooser);
-        
         NamedCommands.registerCommand("Elevator to L4", new ElevatorCmd(ElevatorConstants.L4,CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Feeder Position", new ElevatorTrapezoidCmd(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Feeder Position", new ElevatorCmd(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
         
         NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));
@@ -162,6 +158,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Reset Elevator", new ElevatorResetPosition(elevatorSubSystem));
         
         NamedCommands.registerCommand("Reset Coral", new CoralPivotResetPosition(coralSubSystem));
+        
+        // Carga del chooser para rutinas de PathPlanner
+        autoChooser = AutoBuilder.buildAutoChooser("Test");
+        SmartDashboard.putData("Auto Mode", autoChooser);
         
     }
 
@@ -228,7 +228,7 @@ public class RobotContainer {
         AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));
         
         //pov Izquierda : Se extiende el Elevador hasta L1
-        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L1, CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));
+        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.FeederHeight, CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));
         
         //pov Derecho : Se extiende el Elevador hasta L3
         AddOnsController.povRight().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L3, CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));
@@ -249,7 +249,18 @@ public class RobotContainer {
         coralSubSystem.setDefaultCommand(new CoralPivotCmd(false, coralSubSystem, ()-> AddOnsController.getLeftY()));;
 
         // Trigger Derecho : Se posiciona el elevador y el coral para nada mas recivir del feeder
-        AddOnsController.rightTrigger().onTrue(new ElevatorTrapezoidCmd(ElevatorConstants.FeederHeight, CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));
+        //AddOnsController.rightTrigger().onTrue(new ElevatorTrapezoidCmd(ElevatorConstants.FeederHeight, CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));
+        
+        //AddOnsController.povDown().onTrue(new CoralPivotPosition(CoralConstants.FeederAngle, coralSubSystem));
+        
+        //AddOnsController.povRight().onTrue(new CoralPivotPosition(CoralConstants.angleL1, coralSubSystem));
+        
+        //AddOnsController.povUp().onTrue(new CoralPivotPosition(CoralConstants.angleL4, coralSubSystem));
+        
+        //AddOnsController.povLeft().onTrue(new CoralPivotResetPosition(coralSubSystem));
+        
+        //algeaSubSystem.setDefaultCommand(new AlgaeEnableIndividualIntake(false, false, algeaSubSystem, () -> AddOnsController.getLeftTriggerAxis()));
+        //algeaSubSystem.setDefaultCommand(new AlgaeEnableIndividualIntake(false, true, algeaSubSystem, () -> AddOnsController.getRightTriggerAxis()));
         
     }
 

@@ -41,6 +41,7 @@ public class ElevatorResetPosition extends Command {
     @Override
     public void initialize() {
         // No se requiere lógica adicional en initialize.
+        elevatorSubSystem.changeRunningCmd(true);
     }
 
     /**
@@ -62,6 +63,7 @@ public class ElevatorResetPosition extends Command {
     public void end(boolean interrupted) {
         elevatorSubSystem.stopMotors();
         // Alterna el estado entre extender y retraer
+        elevatorSubSystem.changeRunningCmd(false);
     }
 
     /**

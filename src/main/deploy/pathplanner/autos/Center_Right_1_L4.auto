@@ -5,39 +5,41 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Right_Start_2_L4-10"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center_Right_Start_2_L4-10"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Elevator to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Out"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reset Elevator"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L4-10_2_Feeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Feeder Position"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L4-10_2_Feeder"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
           }
         }
       ]

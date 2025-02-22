@@ -1,5 +1,8 @@
 package frc.robot.Elevator;
 
+import java.lang.Thread.State;
+import java.security.PrivateKey;
+
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -10,6 +13,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
 
@@ -55,6 +59,9 @@ public class ElevatorSubSystem extends SubsystemBase {
 
     private ProfiledPIDController trapezoidRightProfiledPIDController;
     private ProfiledPIDController trapezoidLeftProfiledPIDController;
+
+    //Se encarga de revisar si ya existe un comando ejecutandose
+    private boolean CmdRunning = false ;
 
     /**
      * Construye el subsistema del elevador, inicializando los motores, encoders
@@ -154,8 +161,8 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param targetmeters Altura objetivo en rotaciones.
      */
     public void trapezoidalMotionProfeTargetHeight(double targetmeters) {
-        double RightMotorOutput = trapezoidRightProfiledPIDController.calculate(RightMotorEncoder.getPosition(), targetmeters);
-        double LeftMotorOutput = trapezoidLeftProfiledPIDController.calculate(LeftMotorEncoder.getPosition(), targetmeters);
+        double RightMotorOutput = trapezoidRightProfiledPIDController.calculate(-RightMotorEncoder.getPosition(), (targetmeters- ElevatorConstants.OffSetMeters));
+        double LeftMotorOutput = trapezoidLeftProfiledPIDController.calculate(-LeftMotorEncoder.getPosition(), (targetmeters- ElevatorConstants.OffSetMeters));
 
         RightMotor.setVoltage(RightMotorOutput);
         LeftMotor.setVoltage(LeftMotorOutput);
@@ -208,4 +215,82 @@ public class ElevatorSubSystem extends SubsystemBase {
         RightMotor.set(RightMotorOutput);
         LeftMotor.set(LeftMotorOutput);
     }    
+
+    public void changeRunningCmd (boolean StateOfTheCmd) {
+
+        CmdRunning = StateOfTheCmd;
+
+    }
+
+    public boolean isAtHeight(double level, double rightPos, double leftPos) {
+        double target = level - ElevatorConstants.OffSetMeters;
+        return Math.abs(rightPos + target) < ElevatorConstants.TOLERANCE &&
+               Math.abs(leftPos - target) < ElevatorConstants.TOLERANCE;
+    }
+
+    @Override
+    public void periodic() {
+        
+        boolean l1Height = false;
+        boolean l2Height = false;
+        boolean l3Height = false;
+        boolean l4Height = false;
+        boolean feederHeight = false;
+        
+        if (isAtHeight(ElevatorConstants.L1, getRightMotorPosition(), getLeftMotorPosition())) {
+            l1Height = true;
+            l2Height = false;
+            l3Height = false;
+            l4Height = false;
+            feederHeight = false;
+        }
+        else if (isAtHeight(ElevatorConstants.L2, getRightMotorPosition(), getLeftMotorPosition())) {
+            l1Height = false;
+            l2Height = true;
+            l3Height = false;
+            l4Height = false;
+            feederHeight = false;
+        }
+        else if (isAtHeight(ElevatorConstants.L3, getRightMotorPosition(), getLeftMotorPosition())) {
+            l1Height = false;
+            l2Height = false;
+            l3Height = true;
+            l4Height = false;
+            feederHeight = false;
+        }
+        else if (isAtHeight(ElevatorConstants.L4, getRightMotorPosition(), getLeftMotorPosition())) {
+            l1Height = false;
+            l2Height = false;
+            l3Height = false;
+            l4Height = true;
+            feederHeight = false;
+        }
+        else if (isAtHeight(ElevatorConstants.FeederHeight, getRightMotorPosition(), getLeftMotorPosition())) {
+            l1Height = false;
+            l2Height = false;
+            l3Height = false;
+            l4Height = false;
+            feederHeight = true;
+        }
+        else {
+            l1Height = false;
+            l2Height = false;
+            l3Height = false;
+            l4Height = false;
+            feederHeight = false;
+        }
+        
+        SmartDashboard.putBoolean("The elevator Has a running CMD ?", CmdRunning);
+        
+        SmartDashboard.putBoolean("Your are at L1 Height", l1Height);
+        SmartDashboard.putBoolean("Your are at L2 Height", l2Height);
+        SmartDashboard.putBoolean("Your are at L3 Height", l3Height);
+        SmartDashboard.putBoolean("Your are at L4 Height", l4Height);
+        SmartDashboard.putBoolean("Your are at Feeder Height", feederHeight);
+        
+        SmartDashboard.putNumber("Left Elevator Motor Position", getLeftMotorPosition());
+        SmartDashboard.putNumber("Right Elevator Motor Position", -getRightMotorPosition());
+         
+        super.periodic();
+    }
 }

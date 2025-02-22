@@ -5,135 +5,136 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Center_Left_Start_2_L4-1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Center_Left_Start_2_L4-1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Elevator to L4"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L4-1_2_Feeder"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Coral Out"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Feeder_2_L4-2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Reset Elevator"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L4-2_2_Feeder"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "L4-1_2_Feeder"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Feeder_2_L4-3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Feeder Position"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L4-3_2_Feeder"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Feeder_2_L4-2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevator to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Out"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reset Elevator"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L4-2_2_Feeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Feeder Position"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Feeder_2_L4-3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevator to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Out"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reset Elevator"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "L4-3_2_Feeder"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Feeder Position"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Feeder_2_L4-4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Elevator to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Coral Out"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Reset Elevator"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Feeder_2_L4-4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
           }
         }
       ]

@@ -366,7 +366,7 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.3;
+        public static final double KP = 0.24;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
@@ -381,7 +381,7 @@ public class constants {
         /**
          * Offset en metros (por ejemplo, altura mínima restablecida).
          */
-        public static final double OffSetMeters = 62;
+        public static final double OffSetMeters = 52;
 
         /**
          * Tolerancia en rotaciones (o unidades equivalentes) para determinar
@@ -402,7 +402,7 @@ public class constants {
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
          */
-        public static final double ElevatorVelocity = 0.4;
+        public static final double ElevatorVelocity = 0.6;
 
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
@@ -414,17 +414,17 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 186;
+        public static final double L4 = 190;
 
-        public static final double L3 = 144;
+        public static final double L3 = 110;
 
-        public static final double L2 = 95;
+        public static final double L2 = 70;
 
         public static final double L1 = 70;
 
         public static final double MAXVelocity = 0.8;
 
-        public static final double MAXAcceleration = 0.2;
+        public static final double MAXAcceleration = 0.4;
 
         public static final double FeederHeight = 70;
 
@@ -466,19 +466,18 @@ public class constants {
         public static final double TOLERANCE = 0.5;
 
 
-        public static final double angleL4 = 50;
+        public static final double angleL4 = 94;
+
+        public static final double angleL3 = 60;
+
+        public static final double angleL2 = 75;
+
+        public static final double angleL1 = 80;
+
+        public static final double FeederAngle = 32;
 
 
-        public static final double angleL3 = 30;
-
-
-        public static final double angleL2 = 30;
-
-
-        public static final double angleL1 = 30;
-
-
-        public static final double FeederAngle = 0;
+        public static final double CoralVelocityLimit = 0.25;
     }
 
     /**

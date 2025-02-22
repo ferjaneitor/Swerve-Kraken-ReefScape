@@ -47,17 +47,19 @@ public class ElevatorTrapezoidCmd extends Command {
     @Override
     public void initialize() {
         // No se requiere acción en initialize.
+        elevatorSubSystem.changeRunningCmd(true);
     }
 
     @Override
     public void execute() {
-        elevatorSubSystem.trapezoidalMotionProfeTargetHeight(targetMeters);
+        elevatorSubSystem.trapezoidalMotionProfeTargetHeight(targetMeters );
         coralSubSystem.setPivot2Angle(targetAngleDeg);
     }
 
     @Override
     public void end(boolean interrupted) {
         elevatorSubSystem.stopMotors();
+        elevatorSubSystem.changeRunningCmd(false);
     }
 
     @Override

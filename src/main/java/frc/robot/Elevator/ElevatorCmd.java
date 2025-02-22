@@ -62,6 +62,7 @@ public class ElevatorCmd extends Command {
     @Override
     public void initialize() {
         // No se realiza acción adicional en initialize.
+        elevatorSubSystem.changeRunningCmd(true);
     }
 
     /**
@@ -85,6 +86,7 @@ public class ElevatorCmd extends Command {
     public void end(boolean interrupted) {
         elevatorSubSystem.stopMotors();
         // Alterna el estado entre extender y retraer
+        elevatorSubSystem.changeRunningCmd(false);
     }
 
     /**
@@ -100,9 +102,6 @@ public class ElevatorCmd extends Command {
                    < ElevatorConstants.TOLERANCE
                &&
                Math.abs(elevatorSubSystem.getLeftMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
-                   < ElevatorConstants.TOLERANCE
-               &&
-               Math.abs(coralSubSystem.getPivotPosition() - targetAngleDeg)
-                   < CoralConstants.TOLERANCE;
+                   < ElevatorConstants.TOLERANCE;
     }
 }

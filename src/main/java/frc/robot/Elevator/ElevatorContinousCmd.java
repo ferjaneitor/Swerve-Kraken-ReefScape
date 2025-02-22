@@ -49,7 +49,8 @@ public class ElevatorContinousCmd extends Command {
      */
     @Override
     public void initialize() {
-        finalVelocity = ElevatorConstants.ElevatorVelocity * (isInverted ? -1 : 1);
+        finalVelocity = ElevatorConstants.ElevatorVelocity * (isInverted ? -0.6 : 1);
+        elevatorSubSystem.changeRunningCmd(true);
     }
 
     /**
@@ -69,6 +70,7 @@ public class ElevatorContinousCmd extends Command {
     @Override
     public void end(boolean interrupted) {
         elevatorSubSystem.stopMotors();
+        elevatorSubSystem.changeRunningCmd(false);
     }
 
     /**

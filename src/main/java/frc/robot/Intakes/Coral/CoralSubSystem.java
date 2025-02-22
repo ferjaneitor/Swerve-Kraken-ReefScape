@@ -127,7 +127,7 @@ public class CoralSubSystem extends SubsystemBase {
      * @param angle Ángulo deseado.
      */
     public void setPivot2Angle(double angle) {
-        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(), angle);
+        double finalOutput = PivotpidController.calculate(pivotmotorEncoder.getPosition(), angle) * CoralConstants.CoralVelocityLimit;
         pivotMotor.set(finalOutput);
     }
 
@@ -146,5 +146,6 @@ public class CoralSubSystem extends SubsystemBase {
      */
     public double getPivotPosition() {
         return pivotmotorEncoder.getPosition();
-    }
+    }  
+    
 }
