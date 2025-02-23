@@ -371,7 +371,7 @@ public class constants {
         /**
          * Constante de ganancia integral para el PID del elevador.
          */
-        public static final double KI = 0.02;
+        public static final double KI = 0.05;
 
         /**
          * Constante de ganancia derivativa para el PID del elevador.
@@ -414,7 +414,7 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 190;
+        public static final double L4 = 180;
 
         public static final double L3 = 110;
 
@@ -426,7 +426,7 @@ public class constants {
 
         public static final double MAXAcceleration = 0.4;
 
-        public static final double FeederHeight = 70;
+        public static final double FeederHeight = 68;
 
     }
 
@@ -455,7 +455,7 @@ public class constants {
 
         public static final double KP = 0.03;
 
-        public static final double KI = 0;
+        public static final double KI = 0.05;
 
         public static final double KD = 0;
 
@@ -466,15 +466,15 @@ public class constants {
         public static final double TOLERANCE = 0.5;
 
 
-        public static final double angleL4 = 94;
+        public static final double angleL4 = 99;
 
-        public static final double angleL3 = 60;
+        public static final double angleL3 = 65;
 
         public static final double angleL2 = 75;
 
         public static final double angleL1 = 80;
 
-        public static final double FeederAngle = 32;
+        public static final double FeederAngle = 30;
 
 
         public static final double CoralVelocityLimit = 0.25;
@@ -532,7 +532,7 @@ public class constants {
         /**
          * Velocidad de operación para el mecanismo DeepCage.
          */
-        public static final double deepCageVelocity = 0.2;
+        public static final double deepCageVelocity = 0.6;
     }
     
     //Constantes de la LimeLight

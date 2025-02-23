@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "Center_Left_Start_2_L4-1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator to L4"
-                }
               }
             ]
           }
@@ -31,12 +25,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "L4-1_2_Feeder"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder Position"
                 }
               }
             ]
@@ -51,12 +39,6 @@
                 "data": {
                   "pathName": "Feeder_2_L4-2"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator to L4"
-                }
               }
             ]
           }
@@ -70,12 +52,6 @@
                 "data": {
                   "pathName": "L4-2_2_Feeder"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Feeder Position"
-                }
               }
             ]
           }
@@ -88,12 +64,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Feeder_2_L4-3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Elevator to L4"
                 }
               }
             ]

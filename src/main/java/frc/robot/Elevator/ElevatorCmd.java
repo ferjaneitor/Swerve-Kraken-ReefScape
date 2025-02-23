@@ -102,6 +102,10 @@ public class ElevatorCmd extends Command {
                    < ElevatorConstants.TOLERANCE
                &&
                Math.abs(elevatorSubSystem.getLeftMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
-                   < ElevatorConstants.TOLERANCE;
+                   < ElevatorConstants.TOLERANCE
+               &&
+               (Math.abs(coralSubSystem.getPivotPosition())- targetAngleDeg)
+                   < CoralConstants.TOLERANCE;
+    
     }
 }
