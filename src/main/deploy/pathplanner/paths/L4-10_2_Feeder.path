@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 1.05
+        "x": 1.312,
+        "y": 0.925
       },
       "prevControl": {
-        "x": 1.6426865659809124,
-        "y": 1.2948691929543332
+        "x": 1.4546865659809125,
+        "y": 1.1698691929543332
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -125.00000000000001
+    "rotation": -127.1249951
   },
   "reversed": false,
   "folder": "Right Autos Path",

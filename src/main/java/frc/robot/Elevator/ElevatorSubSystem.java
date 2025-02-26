@@ -1,8 +1,5 @@
 package frc.robot.Elevator;
 
-import java.lang.Thread.State;
-import java.security.PrivateKey;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -215,19 +212,39 @@ public class ElevatorSubSystem extends SubsystemBase {
         RightMotor.set(RightMotorOutput);
         LeftMotor.set(LeftMotorOutput);
     }    
-
+    
+    /**
+     * Cambia el estado del comando en ejecución.
+     *
+     * @param StateOfTheCmd Nuevo estado del comando.
+     */
     public void changeRunningCmd (boolean StateOfTheCmd) {
 
         CmdRunning = StateOfTheCmd;
 
     }
 
+    /**
+     * Verifica si el elevador alcanza la altura deseada.
+     * Calcula el objetivo restando ElevatorConstants.OffSetMeters a level y compara
+     * las posiciones de los motores con una tolerancia.
+     *
+     * @param level Altura objetivo.
+     * @param rightPos Posición del motor derecho.
+     * @param leftPos Posición del motor izquierdo.
+     * @return True si ambas posiciones están dentro de la tolerancia; false en caso contrario.
+     */
     public boolean isAtHeight(double level, double rightPos, double leftPos) {
         double target = level - ElevatorConstants.OffSetMeters;
         return Math.abs(rightPos + target) < ElevatorConstants.TOLERANCE &&
                Math.abs(leftPos - target) < ElevatorConstants.TOLERANCE;
     }
 
+    /**
+     * Actualiza el estado del elevador:
+     * - Verifica si se encuentra en las alturas definidas (L1, L2, L3, L4, Feeder).
+     * - Muestra en SmartDashboard el estado de cada altura y la posición de los motores.
+     */
     @Override
     public void periodic() {
         

@@ -40,7 +40,7 @@ public class AlgaePivotCmd extends Command {
     /**
      * Proveedor que devuelve el valor del joystick en el eje Y.
      */
-    private Supplier<Double> yJoystickSupplier;
+    private Supplier<Double> yJoystickSupplier, leftTriggerSupplier, RightTriggerSupplier;
 
     /**
      * Crea un nuevo comando para ajustar la inclinación/pivote de Algea.
@@ -49,11 +49,20 @@ public class AlgaePivotCmd extends Command {
      * @param algeaSubSystem   Instancia del subsistema Algea a controlar.
      * @param yJoystickSupplier Proveedor del valor del joystick en el eje Y.
      */
-    public AlgaePivotCmd(boolean invertDirection, AlgaeSubSystem algeaSubSystem, Supplier<Double> yJoystickSupplier) {
+    public AlgaePivotCmd(
+        boolean invertDirection, 
+        AlgaeSubSystem algeaSubSystem, 
+        Supplier<Double> yJoystickSupplier, 
+        Supplier<Double> leftTriggerSupplier, 
+        Supplier<Double> rightTriggerSupplier
+        ) {
         this.algeaSubSystem = algeaSubSystem;
         this.isInverted = invertDirection;
         this.yJoystickSupplier = yJoystickSupplier;
+        this.leftTriggerSupplier = leftTriggerSupplier;
+        this.RightTriggerSupplier = rightTriggerSupplier;
         addRequirements(algeaSubSystem);
+    
     }
 
     /**
@@ -65,12 +74,10 @@ public class AlgaePivotCmd extends Command {
     }
 
     /**
-     * Llamado repetidamente mientras el comando está activo.
-     * Calcula y aplica la velocidad al pivote:
-     * - La velocidad final se calcula multiplicando el valor del joystick por AlgaeConstants.AlgaePivotMaxVelocity
-     *   y se invierte si isInverted es true.
-     * - Si el valor del joystick es mayor o igual a 0.2 o menor o igual a -0.2, se activa el pivote con la velocidad calculada.
-     * - En caso contrario, se detiene el pivote.
+     * Ejecuta el comando de pivote:
+     * - Calcula la velocidad final: (joystick * AlgaeConstants.AlgaePivotMaxVelocity), invertida si isInverted.
+     * - Si el joystick está fuera del rango muerto (>=0.2 o <=-0.2), activa el pivote.
+     * - De lo contrario, ajusta los pivotes izquierdo y derecho según los triggers.
      */
     @Override
     public void execute() {
@@ -79,9 +86,15 @@ public class AlgaePivotCmd extends Command {
         if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2) {
             algeaSubSystem.enablePivot(finalVelocity);
         } else {
-            algeaSubSystem.stopPivot();
+            algeaSubSystem.EnableLeftAlgaePivot(
+                leftTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
+            );
+            algeaSubSystem.EnableRightAlgaePivot(
+                RightTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
+            );
         }
     }
+
 
     /**
      * Se llama al terminar o interrumpir el comando, deteniendo el motor del pivote.

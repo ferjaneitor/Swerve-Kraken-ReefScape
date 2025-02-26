@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1,
-        "y": 2.611
+        "x": 5.086,
+        "y": 2.661
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.810855263157894,
-        "y": 1.7927631578947365
+        "x": 5.138784246575342,
+        "y": 1.921404109589041
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 1.05
+        "x": 1.312,
+        "y": 0.925
       },
       "prevControl": {
-        "x": 2.145641447368421,
-        "y": 1.5137335526315792
+        "x": 1.9053705904060385,
+        "y": 1.198086748121356
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -125.00000000000001
+    "rotation": -127.1249951
   },
   "reversed": false,
   "folder": "Right Autos Path",

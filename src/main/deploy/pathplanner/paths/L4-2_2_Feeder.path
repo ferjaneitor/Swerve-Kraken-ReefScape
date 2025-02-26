@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.921,
-        "y": 5.345
+        "x": 5.086,
+        "y": 5.388
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.363338815789474,
-        "y": 6.268371710526315
+        "x": 4.528338815789474,
+        "y": 6.311371710526315
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.5,
-        "y": 7.0
+        "x": 1.312,
+        "y": 7.124
       },
       "prevControl": {
-        "x": 1.6778168953976853,
-        "y": 6.781696274246623
+        "x": 1.489816895397686,
+        "y": 6.905696274246623
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 125.00000000000001
+    "rotation": 127.1249951
   },
   "reversed": false,
   "folder": "Left Autos Paths",

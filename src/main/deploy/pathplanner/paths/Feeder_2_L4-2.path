@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2,
-        "y": 7.0
+        "x": 1.312,
+        "y": 7.124
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.6410253254848246,
-        "y": 7.205696043342804
+        "x": 0.8118352740074127,
+        "y": 7.356502282287376
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.921,
-        "y": 5.345
+        "x": 5.086,
+        "y": 5.388
       },
       "prevControl": {
-        "x": 4.3773074531362655,
-        "y": 6.25875
+        "x": 4.793193493150685,
+        "y": 6.053467465753425
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Left Autos Paths",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 125.00000000000001
+    "rotation": 127.1249951
   },
   "useDefaultConstraints": false
 }

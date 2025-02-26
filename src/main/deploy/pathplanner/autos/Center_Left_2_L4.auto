@@ -13,6 +13,31 @@
                 "data": {
                   "pathName": "Center_Left_Start_2_L4-1"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.3
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Out"
+                }
               }
             ]
           }
@@ -26,6 +51,31 @@
                 "data": {
                   "pathName": "L4-1_2_Feeder"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral In"
+                }
               }
             ]
           }
@@ -38,6 +88,31 @@
                 "type": "path",
                 "data": {
                   "pathName": "Feeder_2_L4-2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.3
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Out"
                 }
               }
             ]

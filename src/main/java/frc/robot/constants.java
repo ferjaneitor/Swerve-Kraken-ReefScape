@@ -414,9 +414,9 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 180;
+        public static final double L4 = 183;
 
-        public static final double L3 = 110;
+        public static final double L3 = 107;
 
         public static final double L2 = 70;
 
@@ -455,20 +455,20 @@ public class constants {
 
         public static final double KP = 0.03;
 
-        public static final double KI = 0.05;
+        public static final double KI = 0.0;
 
-        public static final double KD = 0;
+        public static final double KD = 0.0;
 
         public static final double gearRatio = 100;
 
         public static final Double CoralPivotMaxVelocity = 0.15;
 
-        public static final double TOLERANCE = 0.5;
+        public static final double TOLERANCE = 2;
 
 
         public static final double angleL4 = 99;
 
-        public static final double angleL3 = 65;
+        public static final double angleL3 = 75;
 
         public static final double angleL2 = 75;
 

@@ -13,6 +13,12 @@
                 "data": {
                   "pathName": "Center_Left_Start_2_L4-1"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Elevator to L4"
+                }
               }
             ]
           }
@@ -22,15 +28,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Coral Out"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 0.3
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Coral Out"
                 }
               }
             ]
@@ -43,7 +49,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "L4-1_2_Feeder"
+                  "pathName": "L4-1_2_Park"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
                 }
               }
             ]

@@ -158,6 +158,9 @@ public class AlgaeSubSystem extends SubsystemBase {
         pivotMotor2.set(finalOutput);
     }
     
+    /**
+     * te devuelve una sparkmax especifica
+     */
     public SparkMax getSparkMax (boolean IsRight) {
 
         if (IsRight) {
@@ -167,5 +170,23 @@ public class AlgaeSubSystem extends SubsystemBase {
         }
 
     }    
+
+    /**
+     * se encarga de asignar velocidad al motor derecho del sistema de pivote
+     */
+    public void EnableRightAlgaePivot( double SetVelocity ){
+        
+        pivotMotor1.set(SetVelocity);
+
+    }
+    
+    /**
+     * se encarga de asignar velocidad al motor izquierdo del sistema de pivote
+     */
+    public void EnableLeftAlgaePivot( double SetVelocity ){
+        
+        pivotMotor2.set(SetVelocity);
+
+    }
     
 }
