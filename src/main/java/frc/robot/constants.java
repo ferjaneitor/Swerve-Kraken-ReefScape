@@ -244,7 +244,7 @@ public class constants {
         /**
          * Offset (rotaciones) para el CANCoder de la rueda delantera derecha.
          */
-        public static final Angle kFrontRightEncoderOffset = Rotations.of(0.1787109375);
+        public static final Angle kFrontRightEncoderOffset = Rotations.of(0.165039);
     
         /**
          * Indica si el motor de dirección (steer) de la rueda delantera derecha está invertido.
@@ -414,7 +414,7 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 183;
+        public static final double L4 = 185;
 
         public static final double L3 = 107;
 
@@ -466,11 +466,11 @@ public class constants {
         public static final double TOLERANCE = 2;
 
 
-        public static final double angleL4 = 99;
+        public static final double angleL4 = 114;
 
-        public static final double angleL3 = 75;
+        public static final double angleL3 = 86;
 
-        public static final double angleL2 = 75;
+        public static final double angleL2 = 86;
 
         public static final double angleL1 = 80;
 
@@ -507,7 +507,7 @@ public class constants {
          */
         public static final double intakeVelocity = 0.3;
 
-        public static final double AlgaePivotMaxVelocity = 0.1;
+        public static final double AlgaePivotMaxVelocity = 0.5;
 
         public static final double kp = 0.1;
 
@@ -532,7 +532,7 @@ public class constants {
         /**
          * Velocidad de operación para el mecanismo DeepCage.
          */
-        public static final double deepCageVelocity = 0.6;
+        public static final double deepCageVelocity = 0.8;
     }
     
     //Constantes de la LimeLight

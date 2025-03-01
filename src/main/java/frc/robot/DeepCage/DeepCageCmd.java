@@ -53,7 +53,7 @@ public class DeepCageCmd extends Command {
      */
     @Override
     public void initialize() {
-        finalVelocity = DeepCageConstants.deepCageVelocity * (isInverted ? -1 : 1);
+        finalVelocity = DeepCageConstants.deepCageVelocity * (isInverted ? -0.6 : 1);
     }
 
     /**

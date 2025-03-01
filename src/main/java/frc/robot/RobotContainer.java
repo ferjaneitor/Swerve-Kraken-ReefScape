@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.Drive.TunerConstants;
 import frc.robot.Elevator.ElevatorCmd;
+import frc.robot.Elevator.ElevatorCmdAuto;
 import frc.robot.Elevator.ElevatorContinousCmd;
 import frc.robot.Elevator.ElevatorResetPosition;
 import frc.robot.Elevator.ElevatorSubSystem;
@@ -106,7 +107,7 @@ public class RobotContainer {
     /**
      * Subsistema principal de tracción swerve, creado desde los TunerConstants.
      */
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final static CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
      /**
      * Selector de rutinas de autonomía, utilizando {@link AutoBuilder}.
@@ -140,11 +141,11 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
         
-        NamedCommands.registerCommand("Elevator to L4", new ElevatorCmd(ElevatorConstants.L4,CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Elevator to L3", new ElevatorCmd(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Elevator to L2", new ElevatorCmd(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Elevator to L1", new ElevatorCmd(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Feeder Position", new ElevatorCmd(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L4", new ElevatorCmdAuto(ElevatorConstants.L4,CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L3", new ElevatorCmdAuto(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L2", new ElevatorCmdAuto(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Elevator to L1", new ElevatorCmdAuto(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Feeder Position", new ElevatorCmdAuto(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
         
         NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));

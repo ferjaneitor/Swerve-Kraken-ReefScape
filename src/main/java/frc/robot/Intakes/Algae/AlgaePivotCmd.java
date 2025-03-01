@@ -87,10 +87,10 @@ public class AlgaePivotCmd extends Command {
             algeaSubSystem.enablePivot(finalVelocity);
         } else {
             algeaSubSystem.EnableLeftAlgaePivot(
-                leftTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
+                leftTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity * -1 
             );
             algeaSubSystem.EnableRightAlgaePivot(
-                RightTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
+                RightTriggerSupplier.get() < 0.3 ? 0 : RightTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
             );
         }
     }
