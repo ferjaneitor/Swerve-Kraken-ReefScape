@@ -135,6 +135,7 @@ public class RobotContainer {
      */
     private final CoralSubSystem coralSubSystem = new CoralSubSystem();
 
+    @SuppressWarnings("unused")
     private final VisionSubsystem visionSubsystem;
 
     /**

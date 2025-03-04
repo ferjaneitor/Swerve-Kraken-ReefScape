@@ -26,7 +26,9 @@ public class VisionSubsystem extends SubsystemBase{
     public static final String LimeLight1 = "limelight"; //CAMBIAR NOMBRE
 
     // Adjustable transform for the Limelight pose per-alliance
+    @SuppressWarnings("unused")
     private static final Transform2d LL_BLUE_TRANSFORM = new Transform2d(0, 0, new Rotation2d());
+    @SuppressWarnings("unused")
     private static final Transform2d LL_RED_TRANSFORM = new Transform2d(0, 0, new Rotation2d());
 
     public AprilTagFieldLayout aprilTagFieldLayout;
@@ -34,14 +36,19 @@ public class VisionSubsystem extends SubsystemBase{
     private double lastOdometryTime = 0;
 
     private double limelightHeartbeat = 0;
+    @SuppressWarnings("unused")
     private double frontLimelightHeartbeat = 0;
     private double lastHeartbeatTime = 0;
+    @SuppressWarnings("unused")
     private double frontLastHeartbeatTime = 0;
     private boolean limelightConnected = false;
+    @SuppressWarnings("unused")
     private boolean frontLimelightConnected = false;
 
     public Double distanceOverride = null;
+    @SuppressWarnings("unused")
     private Double tagHeightOverride = null;
+    @SuppressWarnings("unused")
     private PoseEstimate lastPoseEstimate = null;
     private Double stageAngle = null;
     private Pose2d currentTrapPose = null;
@@ -99,7 +106,7 @@ public class VisionSubsystem extends SubsystemBase{
             firstPeriodic = false;
         }
 
-        //log("Odometry Enabled", odometryEnabled);
+        SmartDashboard.putBoolean("Odometry Enabled", odometryEnabled);     
         
         double newHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight", "hb");
         if (newHeartbeat > limelightHeartbeat) {
@@ -110,15 +117,11 @@ public class VisionSubsystem extends SubsystemBase{
             limelightConnected = false;
         }
         if (Robot.isSimulation()) limelightConnected = true;
+        
+        SmartDashboard.putBoolean("LimeLight Is Connected", limelightConnected);
 
         if (!limelightConnected) {
             rawFiducials = emptyFiducials;
-            //log("LL Pose Valid?", false);
-            //log("LL Pose", nilPose);
-            //log("Speaker Angle", -1);
-            //log("Speaker Distance", -1);
-            // log("Speaker Tag Height", -1);
-            // log("Can See Speaker", false);
             
             return;
         }
@@ -127,6 +130,7 @@ public class VisionSubsystem extends SubsystemBase{
         PoseEstimate bestPose;
         PoseEstimate frontPose = validatePoseEstimate(null, 0); // Not using front limelight for odometry yet
         PoseEstimate backPose;
+        PoseEstimate megaTag2Pose = null;
 
         
         if (megatag2Enabled) {
@@ -145,8 +149,15 @@ public class VisionSubsystem extends SubsystemBase{
         }
 
         double deltaSeconds = Timer.getFPGATimestamp() - lastOdometryTime;
-        //log("LL Pose Pre-Validation", backPose == null ? nilPose : backPose.pose);
-        //log("LL MegaTag2", megaTag2Pose == null ? nilPose : megaTag2Pose.pose);
+        
+        SmartDashboard.putNumber("LL Pose Pre-Validation : X Axis ", backPose == null ? nilPose.getX() : backPose.pose.getX());       
+        SmartDashboard.putNumber("LL Pose Pre-Validation : Y Axis ", backPose == null ? nilPose.getY() : backPose.pose.getY());       
+        SmartDashboard.putNumber("LL Pose Pre-Validation : Rotation Degrees ", backPose == null ? nilPose.getRotation().getDegrees() : backPose.pose.getRotation().getDegrees());       
+
+        SmartDashboard.putNumber(" LL MegaTag2 : X Axis ", megaTag2Pose == null ? nilPose.getX() : megaTag2Pose.pose.getX() );
+        SmartDashboard.putNumber(" LL MegaTag2 : Y Axis ", megaTag2Pose == null ? nilPose.getY() : megaTag2Pose.pose.getY() );
+        SmartDashboard.putNumber(" LL MegaTag2 : Rotation Degrees ", megaTag2Pose == null ? nilPose.getRotation().getDegrees() : megaTag2Pose.pose.getRotation().getDegrees() );
+        
         backPose = validatePoseEstimate(backPose, deltaSeconds);
         
         if (frontPose != null && backPose != null) {
@@ -165,8 +176,15 @@ public class VisionSubsystem extends SubsystemBase{
             }
         }
 
-
-
+        SmartDashboard.putBoolean("LL BestPose Is Valid ?", bestPose != null);
+  
+        SmartDashboard.putNumber("LL Pose : X Axis", bestPose == null ? nilPose.getX() : bestPose.pose.getX());      
+        SmartDashboard.putNumber("LL Pose : Y Axis", bestPose == null ? nilPose.getY() : bestPose.pose.getY());      
+        SmartDashboard.putNumber("LL Pose : Rotation Degrees", bestPose == null ? nilPose.getRotation().getDegrees() : bestPose.pose.getRotation().getDegrees());      
+  
+        SmartDashboard.putNumber("LL Pose Avarage Target Distance", bestPose == null ? -1 : bestPose.avgTagDist);
+        
+        SmartDashboard.putNumber("LL POse Avarage Target Area", bestPose == null ? -1 : bestPose.avgTagDist);
   
     }
 
@@ -280,7 +298,7 @@ public class VisionSubsystem extends SubsystemBase{
 
         if (megatag2Enabled) {
             if (poseEstimate.tagCount == 0) return null;
-            if (Math.abs(RobotContainer.drivetrain.getPigeon2().getRate()) > 720) return null;
+            if (Math.abs(RobotContainer.drivetrain.getPigeon2().getAngularVelocityZWorld().getValueAsDouble()) > 720) return null;
         } else {
             double tagMin = 1;
             double tagMax = 2;
