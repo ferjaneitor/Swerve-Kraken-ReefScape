@@ -32,6 +32,7 @@ import frc.robot.Intakes.Coral.CoralContinousInputCmd;
 import frc.robot.Intakes.Coral.CoralPivotCmd;
 import frc.robot.Intakes.Coral.CoralPivotResetPosition;
 import frc.robot.Intakes.Coral.CoralSubSystem;
+import frc.robot.LimeLight.VisionSubsystem;
 import frc.robot.constants.CoralConstants;
 import frc.robot.constants.ElevatorConstants;
 import frc.robot.DeepCage.DeepCageCmd;
@@ -134,12 +135,16 @@ public class RobotContainer {
      */
     private final CoralSubSystem coralSubSystem = new CoralSubSystem();
 
+    private final VisionSubsystem visionSubsystem;
+
     /**
      * Constructor principal de RobotContainer. Se encarga de configurar el mapeo de
      * botones y cargar las rutinas de autonomía disponibles.
      */
     public RobotContainer() {
         configureBindings();
+        
+        visionSubsystem = new VisionSubsystem();
         
         NamedCommands.registerCommand("Elevator to L4", new ElevatorCmdAuto(ElevatorConstants.L4,CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L3", new ElevatorCmdAuto(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
