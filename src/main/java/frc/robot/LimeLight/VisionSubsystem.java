@@ -68,8 +68,8 @@ public class VisionSubsystem extends SubsystemBase{
     private final Transform2d trapPoseTransform = new Transform2d(1.132, 0.32, Rotation2d.fromRadians(-0.005));
     private final Pose2d nilPose = new Pose2d(-1, -1, new Rotation2d());
 
-    final int[] autoTagFilter = new int[] { 3, 4, 7, 8 };
-    final int[] teleopTagFilter = new int[] { 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16 };
+    final int[] autoTagFilter = new int[] { 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 22 };
+    final int[] teleopTagFilter = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22 };
     public boolean isBlue(){
         return DriverStation.getAlliance().get()==Alliance.Blue;
         }public boolean isRed(){
@@ -93,7 +93,6 @@ public class VisionSubsystem extends SubsystemBase{
         }
         currentTrapPose = trapPoses.get(11);
 
-        
     }
 
     @Override
