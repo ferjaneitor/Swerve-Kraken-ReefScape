@@ -74,7 +74,6 @@ public class ElevatorResetPosition extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(elevatorSubSystem.getRightMotorPosition()) < ElevatorConstants.TOLERANCE &&
-               Math.abs(elevatorSubSystem.getLeftMotorPosition()) < ElevatorConstants.TOLERANCE;
+        return Math.abs(elevatorSubSystem.getElevatorMotorPosition()) < ElevatorConstants.TOLERANCE;
     }
 }

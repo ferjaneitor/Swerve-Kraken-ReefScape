@@ -392,12 +392,7 @@ public class constants {
         /**
          * ID del motor 1 (NEO/SparkMax u otro) en el elevador (Derecho).
          */
-        public static final int RightMotorID = 4;
-
-        /**
-         * ID del motor 2 (NEO/SparkMax u otro) en el elevador (Izquierdo).
-         */
-        public static final int LeftMotorID = 7;
+        public static final int ElevatorMotorID = 6;
 
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
@@ -489,18 +484,12 @@ public class constants {
         /**
          * ID del motor 1 para el mecanismo de intake.
          */
-        public static final int motor1ID = 3;
+        public static final int IntakeMotorID = 3;
 
         /**
          * ID del motor de pivote para el mecanismo Algae, si corresponde.
          */
-        public static final int pivotMotor1ID = 6;
-        public static final int pivotMotor2ID = 15;
-
-        /**
-         * ID de un segundo motor de intake, si el subsistema Algae lo requiere.
-         */
-        public static final int motor2ID = 1;
+        public static final int pivotMotorID = 15;
 
         /**
          * Velocidad de intake para los motores principales del mecanismo Algae.
@@ -527,7 +516,7 @@ public class constants {
         /**
          * ID del primer motor (motor1) del subsistema DeepCage.
          */
-        public static final int motor1ID = 19;
+        public static final int motor1ID = 4;
 
         /**
          * Velocidad de operación para el mecanismo DeepCage.

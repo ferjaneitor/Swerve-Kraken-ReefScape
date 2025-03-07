@@ -97,10 +97,7 @@ public class ElevatorCmdAuto extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(elevatorSubSystem.getRightMotorPosition() + (targetMeters - ElevatorConstants.OffSetMeters))
-                   < ElevatorConstants.TOLERANCE
-               &&
-               Math.abs(elevatorSubSystem.getLeftMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
+        return Math.abs(elevatorSubSystem.getElevatorMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE;
     
     }

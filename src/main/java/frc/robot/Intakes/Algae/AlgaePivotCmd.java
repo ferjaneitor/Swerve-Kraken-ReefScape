@@ -40,7 +40,7 @@ public class AlgaePivotCmd extends Command {
     /**
      * Proveedor que devuelve el valor del joystick en el eje Y.
      */
-    private Supplier<Double> yJoystickSupplier, leftTriggerSupplier, RightTriggerSupplier;
+    private Supplier<Double> yJoystickSupplier;
 
     /**
      * Crea un nuevo comando para ajustar la inclinación/pivote de Algea.
@@ -52,15 +52,10 @@ public class AlgaePivotCmd extends Command {
     public AlgaePivotCmd(
         boolean invertDirection, 
         AlgaeSubSystem algeaSubSystem, 
-        Supplier<Double> yJoystickSupplier, 
-        Supplier<Double> leftTriggerSupplier, 
-        Supplier<Double> rightTriggerSupplier
+        Supplier<Double> yJoystickSupplier
         ) {
         this.algeaSubSystem = algeaSubSystem;
         this.isInverted = invertDirection;
-        this.yJoystickSupplier = yJoystickSupplier;
-        this.leftTriggerSupplier = leftTriggerSupplier;
-        this.RightTriggerSupplier = rightTriggerSupplier;
         addRequirements(algeaSubSystem);
     
     }
@@ -86,12 +81,7 @@ public class AlgaePivotCmd extends Command {
         if (yJoystickSupplier.get() >= 0.2 || yJoystickSupplier.get() <= -0.2) {
             algeaSubSystem.enablePivot(finalVelocity);
         } else {
-            algeaSubSystem.EnableLeftAlgaePivot(
-                leftTriggerSupplier.get() < 0.3 ? 0 : leftTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity * -1 
-            );
-            algeaSubSystem.EnableRightAlgaePivot(
-                RightTriggerSupplier.get() < 0.3 ? 0 : RightTriggerSupplier.get() * AlgaeConstants.AlgaePivotMaxVelocity
-            );
+            algeaSubSystem.stopPivot();
         }
     }
 

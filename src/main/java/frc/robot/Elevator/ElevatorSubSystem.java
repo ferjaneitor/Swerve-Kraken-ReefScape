@@ -8,8 +8,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.ElevatorConstants;
@@ -34,28 +32,16 @@ import frc.robot.constants.ElevatorConstants;
  */
 public class ElevatorSubSystem extends SubsystemBase {
 
-    // Objeto SparkMax que controla el primer motor del elevador (RightMotor).
-    private SparkMax RightMotor;
+    // Objeto SparkMax que controla el primer motor del elevador (ElevatorMotor).
+    private SparkMax ElevatorMotor;
 
-    // Objeto SparkMax que controla el segundo motor del elevador (LeftMotor).
-    private SparkMax LeftMotor;
-
-    // Encoder relativo integrado en el primer motor (RightMotor).
-    private RelativeEncoder RightMotorEncoder;
+    // Encoder relativo integrado en el primer motor (ElevatorMotor).
+    private RelativeEncoder ElevatorMotorEncoder;
 
     private SparkMaxConfig config;
 
-    // Encoder relativo integrado en el segundo motor (LeftMotor).
-    private RelativeEncoder LeftMotorEncoder;
-
-    // Controlador PID para el primer motor (RightMotor).
-    private PIDController RightMotorPidController;
-
-    // Controlador PID para el segundo motor (LeftMotor).
-    private PIDController LeftMotorPidController;
-
-    private ProfiledPIDController trapezoidRightProfiledPIDController;
-    private ProfiledPIDController trapezoidLeftProfiledPIDController;
+    // Controlador PID para el primer motor (ElevatorMotor).
+    private PIDController ElevatorMotorPidController;
 
     //Se encarga de revisar si ya existe un comando ejecutandose
     private boolean CmdRunning = false ;
@@ -65,33 +51,11 @@ public class ElevatorSubSystem extends SubsystemBase {
      * y controladores PID. También reinicia los encoders para que partan de posición 0.
      */
     public ElevatorSubSystem() {
-        this.RightMotor = new SparkMax(ElevatorConstants.RightMotorID, MotorType.kBrushless);
-        this.LeftMotor = new SparkMax(ElevatorConstants.LeftMotorID, MotorType.kBrushless);
+        this.ElevatorMotor = new SparkMax(ElevatorConstants.ElevatorMotorID, MotorType.kBrushless);
 
-        this.RightMotorEncoder = RightMotor.getEncoder();
-        this.LeftMotorEncoder = LeftMotor.getEncoder();
+        this.ElevatorMotorEncoder = ElevatorMotor.getEncoder();
 
-        this.RightMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
-        this.LeftMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
-        
-        this.trapezoidRightProfiledPIDController = new ProfiledPIDController(
-            ElevatorConstants.KP, 
-            ElevatorConstants.KI, 
-            ElevatorConstants.KD, 
-            new TrapezoidProfile.Constraints(
-                ElevatorConstants.MAXVelocity, 
-                ElevatorConstants.MAXAcceleration
-            )
-        );
-        this.trapezoidLeftProfiledPIDController = new ProfiledPIDController(
-            ElevatorConstants.KP, 
-            ElevatorConstants.KI, 
-            ElevatorConstants.KD, 
-            new TrapezoidProfile.Constraints(
-                ElevatorConstants.MAXVelocity, 
-                ElevatorConstants.MAXAcceleration
-            )
-        );
+        this.ElevatorMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
         
         // Convierte el diámetro del sprocket de pulgadas a centímetros y lo usa para calcular la circunferencia en metros.
         double SproketDiameterMeters = ElevatorConstants.SproketDiameterInches * 2.54;
@@ -100,8 +64,7 @@ public class ElevatorSubSystem extends SubsystemBase {
         config = new SparkMaxConfig();
         config.encoder.positionConversionFactor((SproketCircumferenceMeters * ElevatorConstants.ElevatorStages) / ElevatorConstants.GearRatio);
 
-        RightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        LeftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        ElevatorMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         ResetEncoders();    
     }
@@ -111,8 +74,7 @@ public class ElevatorSubSystem extends SubsystemBase {
      * Se puede llamar cada vez que se desee recalibrar la posición de los motores del elevador.
      */
     public void ResetEncoders() {
-        RightMotorEncoder.setPosition(0);
-        LeftMotorEncoder.setPosition(0);
+        ElevatorMotorEncoder.setPosition(0);
     }
 
     /**
@@ -145,23 +107,17 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param targetMeters Número de rotaciones deseadas (positivo para subir, negativo para bajar).
      */
     public void targetHeightFromRotations(double targetMeters) {
-        double RightMotorOutput = RightMotorPidController.calculate(RightMotorEncoder.getPosition(), -(targetMeters - ElevatorConstants.OffSetMeters));
-        double LeftMotorOutput = LeftMotorPidController.calculate(LeftMotorEncoder.getPosition(), +(targetMeters - ElevatorConstants.OffSetMeters));
+        double ElevatorMotorOutput = ElevatorMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), (targetMeters - ElevatorConstants.OffSetMeters));
 
-        RightMotor.setVoltage(RightMotorOutput);
-        LeftMotor.setVoltage(LeftMotorOutput);
+        ElevatorMotor.setVoltage(ElevatorMotorOutput);
     }
 
     /**
-     * Ejecuta un movimiento con perfil trapezoidal para alcanzar la altura objetivo.
-     *
-     * @param targetmeters Altura objetivo en rotaciones.
-     */
+     * Ejecuta un movimiento con perfil trapezoidal para alcanzar la 
     public void trapezoidalMotionProfeTargetHeight(double targetmeters) {
-        double RightMotorOutput = trapezoidRightProfiledPIDController.calculate(-RightMotorEncoder.getPosition(), (targetmeters- ElevatorConstants.OffSetMeters));
-        double LeftMotorOutput = trapezoidLeftProfiledPIDController.calculate(-LeftMotorEncoder.getPosition(), (targetmeters- ElevatorConstants.OffSetMeters));
+        double ElevatorMotorOutput = trapezoidRightProfiledPIDControllercalculate(-.getPosition(), (targetmeters- ElevatorConstants.OffSetMeters));
 
-        RightMotor.setVoltage(RightMotorOutput);
+        ElevatorMotor.setVoltage(ElevatorMotorOutput);
         LeftMotor.setVoltage(LeftMotorOutput);
     }
 
@@ -169,26 +125,16 @@ public class ElevatorSubSystem extends SubsystemBase {
      * Detiene los dos motores del elevador estableciendo su velocidad a 0.
      */
     public void stopMotors() {
-        RightMotor.set(0);
-        LeftMotor.set(0);
+        ElevatorMotor.set(0);
     }
 
     /**
-     * Obtiene la posición (en rotaciones) del motor derecho (RightMotor).
+     * Obtiene la posición (en rotaciones) del motor derecho (ElevatorMotor).
      *
-     * @return Posición actual del encoder de RightMotor.
+     * @return Posición actual del encoder de ElevatorMotor.
      */
-    public double getRightMotorPosition() {
-        return RightMotorEncoder.getPosition();
-    }
-
-    /**
-     * Obtiene la posición (en rotaciones) del motor izquierdo (LeftMotor).
-     *
-     * @return Posición actual del encoder de LeftMotor.
-     */
-    public double getLeftMotorPosition() {
-        return LeftMotorEncoder.getPosition();
+    public double getElevatorMotorPosition() {
+        return ElevatorMotorEncoder.getPosition();
     }
 
     /**
@@ -198,19 +144,16 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param Velocity Velocidad deseada (por ejemplo, entre -1.0 y 1.0).
      */
     public void setVelocity(double Velocity) {
-        RightMotor.set(-Velocity);
-        LeftMotor.set(Velocity);
+        ElevatorMotor.set(-Velocity);
     }
     
     /**
      * Aplica automáticamente un PID que reinicia la posición del elevador.
      */
     public void resetPosition() {
-        double RightMotorOutput = RightMotorPidController.calculate(RightMotorEncoder.getPosition(), 0);
-        double LeftMotorOutput = LeftMotorPidController.calculate(LeftMotorEncoder.getPosition(), 0);
+        double ElevatorMotorOutput = ElevatorMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), 0);
 
-        RightMotor.set(RightMotorOutput);
-        LeftMotor.set(LeftMotorOutput);
+        ElevatorMotor.set(ElevatorMotorOutput);
     }    
     
     /**
@@ -234,10 +177,9 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param leftPos Posición del motor izquierdo.
      * @return True si ambas posiciones están dentro de la tolerancia; false en caso contrario.
      */
-    public boolean isAtHeight(double level, double rightPos, double leftPos) {
+    public boolean isAtHeight(double level, double ElevatorPos) {
         double target = level - ElevatorConstants.OffSetMeters;
-        return Math.abs(rightPos + target) < ElevatorConstants.TOLERANCE &&
-               Math.abs(leftPos - target) < ElevatorConstants.TOLERANCE;
+        return Math.abs(ElevatorPos - target) < ElevatorConstants.TOLERANCE;
     }
 
     /**
@@ -254,35 +196,35 @@ public class ElevatorSubSystem extends SubsystemBase {
         boolean l4Height = false;
         boolean feederHeight = false;
         
-        if (isAtHeight(ElevatorConstants.L1, getRightMotorPosition(), getLeftMotorPosition())) {
+        if (isAtHeight(ElevatorConstants.L1, getElevatorMotorPosition())) {
             l1Height = true;
             l2Height = false;
             l3Height = false;
             l4Height = false;
             feederHeight = false;
         }
-        else if (isAtHeight(ElevatorConstants.L2, getRightMotorPosition(), getLeftMotorPosition())) {
+        else if (isAtHeight(ElevatorConstants.L2, getElevatorMotorPosition())) {
             l1Height = false;
             l2Height = true;
             l3Height = false;
             l4Height = false;
             feederHeight = false;
         }
-        else if (isAtHeight(ElevatorConstants.L3, getRightMotorPosition(), getLeftMotorPosition())) {
+        else if (isAtHeight(ElevatorConstants.L3, getElevatorMotorPosition())) {
             l1Height = false;
             l2Height = false;
             l3Height = true;
             l4Height = false;
             feederHeight = false;
         }
-        else if (isAtHeight(ElevatorConstants.L4, getRightMotorPosition(), getLeftMotorPosition())) {
+        else if (isAtHeight(ElevatorConstants.L4, getElevatorMotorPosition())) {
             l1Height = false;
             l2Height = false;
             l3Height = false;
             l4Height = true;
             feederHeight = false;
         }
-        else if (isAtHeight(ElevatorConstants.FeederHeight, getRightMotorPosition(), getLeftMotorPosition())) {
+        else if (isAtHeight(ElevatorConstants.FeederHeight, getElevatorMotorPosition())) {
             l1Height = false;
             l2Height = false;
             l3Height = false;
@@ -304,9 +246,8 @@ public class ElevatorSubSystem extends SubsystemBase {
         SmartDashboard.putBoolean("Your are at L3 Height", l3Height);
         SmartDashboard.putBoolean("Your are at L4 Height", l4Height);
         SmartDashboard.putBoolean("Your are at Feeder Height", feederHeight);
-        
-        SmartDashboard.putNumber("Left Elevator Motor Position", getLeftMotorPosition());
-        SmartDashboard.putNumber("Right Elevator Motor Position", -getRightMotorPosition());
+    
+        SmartDashboard.putNumber("Right Elevator Motor Position", -getElevatorMotorPosition());
          
         super.periodic();
     }
