@@ -7,13 +7,10 @@ import frc.robot.RobotContainer;
 import frc.robot.utils.LimelightHelpers;
 import frc.robot.utils.LimelightHelpers.PoseEstimate;
 import frc.robot.utils.LimelightHelpers.RawFiducial;
-import java.util.HashMap;
-import java.util.Optional;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -23,7 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase{
 
-    public static final String LimeLight1 = "limelight"; //CAMBIAR NOMBRE
+    public static final String LimeLight_UP = "P_Sherman_D"; //CAMBIAR NOMBRE
+    public static final String LimeLight_Down = "P_Sherman_U"; //CAMBIAR NOMBRE
 
     // Adjustable transform for the Limelight pose per-alliance
     @SuppressWarnings("unused")
@@ -50,22 +48,14 @@ public class VisionSubsystem extends SubsystemBase{
     private Double tagHeightOverride = null;
     @SuppressWarnings("unused")
     private PoseEstimate lastPoseEstimate = null;
-    private Double stageAngle = null;
-    private Pose2d currentTrapPose = null;
     public Double stageTX = null;
     public Double stageTY = null;
     private boolean megatag2Enabled = false;
-    public HashMap<Integer, Pose2d> trapPoses = new HashMap<>();
-
-    private Pose2d speakerPoseBlue = null;
-    private Pose2d speakerPoseRed = null;
-
 
     private final RawFiducial[] emptyFiducials = new RawFiducial[0];
     public RawFiducial[] rawFiducials = emptyFiducials;
 
     private boolean firstPeriodic = true;
-    private final Transform2d trapPoseTransform = new Transform2d(1.132, 0.32, Rotation2d.fromRadians(-0.005));
     private final Pose2d nilPose = new Pose2d(-1, -1, new Rotation2d());
 
     final int[] autoTagFilter = new int[] { 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 19, 20, 21, 22 };
@@ -88,11 +78,6 @@ public class VisionSubsystem extends SubsystemBase{
         SmartDashboard.putNumber("RED Pixel Offset", 0);
         SmartDashboard.putNumber("BLUE Pixel Offset", 0);
 
-        for (int i = 11; i <= 16; i++) {
-            trapPoses.put(i, calculateTrapPose(i));
-        }
-        currentTrapPose = trapPoses.get(11);
-
     }
 
     @Override
@@ -107,7 +92,7 @@ public class VisionSubsystem extends SubsystemBase{
 
         SmartDashboard.putBoolean("Odometry Enabled", odometryEnabled);     
         
-        double newHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight", "hb");
+        double newHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight-up", "hb");
         if (newHeartbeat > limelightHeartbeat) {
             limelightConnected = true;
             limelightHeartbeat = newHeartbeat;
@@ -117,7 +102,7 @@ public class VisionSubsystem extends SubsystemBase{
         }
         if (Robot.isSimulation()) limelightConnected = true;
         
-        SmartDashboard.putBoolean("LimeLight Is Connected", limelightConnected);
+        SmartDashboard.putBoolean("LimeLight-UP Is Connected", limelightConnected);
 
         if (!limelightConnected) {
             rawFiducials = emptyFiducials;
@@ -128,43 +113,53 @@ public class VisionSubsystem extends SubsystemBase{
 
         PoseEstimate bestPose;
         PoseEstimate frontPose = validatePoseEstimate(null, 0); // Not using front limelight for odometry yet
-        PoseEstimate backPose;
+        PoseEstimate upPose;
+        PoseEstimate downPose;
         PoseEstimate megaTag2Pose = null;
 
         
         if (megatag2Enabled) {
+            
             double megatagDegrees = RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees();
             if (DriverStation.getAlliance().get()==Alliance.Red) megatagDegrees = MathUtil.inputModulus(megatagDegrees + 180, -180, 180);
-            LimelightHelpers.SetRobotOrientation(LimeLight1, megatagDegrees, 0, 0, 0, 0, 0);
-            backPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLight1);
+            LimelightHelpers.SetRobotOrientation(LimeLight_UP, megatagDegrees, 0, 0, 0, 0, 0);
+            upPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLight_UP);
+            
+            LimelightHelpers.SetRobotOrientation(LimeLight_Down, megatagDegrees, 0, 0, 0, 0, 0);
+            downPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLight_Down);
+            
         } else {
-            backPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight1);
-        }
-
-        if (backPose != null)  {
-            rawFiducials = backPose.rawFiducials;
-        } else {
-            rawFiducials = emptyFiducials;
+            
+            upPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_UP);
+            
+            downPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_Down);
+            
         }
 
         double deltaSeconds = Timer.getFPGATimestamp() - lastOdometryTime;
         
-        SmartDashboard.putNumber("LL Pose Pre-Validation : X Axis ", backPose == null ? nilPose.getX() : backPose.pose.getX());       
-        SmartDashboard.putNumber("LL Pose Pre-Validation : Y Axis ", backPose == null ? nilPose.getY() : backPose.pose.getY());       
-        SmartDashboard.putNumber("LL Pose Pre-Validation : Rotation Degrees ", backPose == null ? nilPose.getRotation().getDegrees() : backPose.pose.getRotation().getDegrees());       
+        SmartDashboard.putNumber("LL UP Pose Pre-Validation : X Axis ", upPose == null ? nilPose.getX() : upPose.pose.getX());       
+        SmartDashboard.putNumber("LL UP Pose Pre-Validation : Y Axis ", upPose == null ? nilPose.getY() : upPose.pose.getY());       
+        SmartDashboard.putNumber("LL UP Pose Pre-Validation : Rotation Degrees ", upPose == null ? nilPose.getRotation().getDegrees() : upPose.pose.getRotation().getDegrees());       
+        
+        SmartDashboard.putNumber("LL DOWN Pose Pre-Validation : X Axis ", downPose == null ? nilPose.getX() : downPose.pose.getX());       
+        SmartDashboard.putNumber("LL DOWN Pose Pre-Validation : Y Axis ", downPose == null ? nilPose.getY() : downPose.pose.getY());       
+        SmartDashboard.putNumber("LL DOWN Pose Pre-Validation : Rotation Degrees ", downPose == null ? nilPose.getRotation().getDegrees() : downPose.pose.getRotation().getDegrees());       
 
         SmartDashboard.putNumber(" LL MegaTag2 : X Axis ", megaTag2Pose == null ? nilPose.getX() : megaTag2Pose.pose.getX() );
         SmartDashboard.putNumber(" LL MegaTag2 : Y Axis ", megaTag2Pose == null ? nilPose.getY() : megaTag2Pose.pose.getY() );
         SmartDashboard.putNumber(" LL MegaTag2 : Rotation Degrees ", megaTag2Pose == null ? nilPose.getRotation().getDegrees() : megaTag2Pose.pose.getRotation().getDegrees() );
         
-        backPose = validatePoseEstimate(backPose, deltaSeconds);
+        downPose = validatePoseEstimate(downPose, deltaSeconds);
         
-        if (frontPose != null && backPose != null) {
-            bestPose = (frontPose.avgTagArea >= backPose.avgTagArea) ? frontPose : backPose;
-        } else if (frontPose != null) {
-            bestPose = frontPose;
+        upPose = validatePoseEstimate(upPose, deltaSeconds);
+        
+        if (frontPose != null && upPose != null) {
+            bestPose = (downPose.avgTagArea >= upPose.avgTagArea) ? downPose : upPose;
+        } else if (downPose != null) {
+            bestPose = downPose;
         } else {
-            bestPose = backPose;
+            bestPose = upPose;
         }
         
         if (bestPose != null) {
@@ -188,11 +183,11 @@ public class VisionSubsystem extends SubsystemBase{
     }
 
     public void setAutoTagFilter() {
-        LimelightHelpers.SetFiducialIDFiltersOverride(LimeLight1, autoTagFilter);
+        LimelightHelpers.SetFiducialIDFiltersOverride(LimeLight_UP, autoTagFilter);
     }
 
     public void setTeleopTagFilter() {
-        LimelightHelpers.SetFiducialIDFiltersOverride(LimeLight1, teleopTagFilter);
+        LimelightHelpers.SetFiducialIDFiltersOverride(LimeLight_UP, teleopTagFilter);
     }
 
     public RawFiducial getFiducialRange(int low, int high) {
@@ -219,24 +214,8 @@ public class VisionSubsystem extends SubsystemBase{
         return biggest;
     }
 
-    public Pose2d getSpeakerPose() {
-        return isBlue() ? speakerPoseBlue : speakerPoseRed;
-    }
-
-
     public boolean isLimelightConnected() {
         return limelightConnected;
-    }
-
-    public Pose2d calculateTrapPose(int tagID) {
-        Optional<Pose3d> pose3d = aprilTagFieldLayout.getTagPose(tagID);
-        if (pose3d.isEmpty()) return null;
-
-        return pose3d.get().toPose2d().transformBy(trapPoseTransform);
-    }
-
-    public Pose2d getCurrentTrapPose() {
-        return currentTrapPose;
     }
     
     public void setAllowVisionOdometry(boolean odometryEnabled) {
@@ -254,7 +233,6 @@ public class VisionSubsystem extends SubsystemBase{
     public void setDistanceOverride(Double distance) {
         distanceOverride = distance;
     }
-
 
     public Command clearDistanceOverride() {
         return distanceOverride(null);
@@ -282,14 +260,6 @@ public class VisionSubsystem extends SubsystemBase{
 
     public Command megatag2Enabled(boolean enabled) {
         return Commands.runOnce(() -> setMegatag2Enabled(enabled));
-    }
-
-    public Double getStageAngle() {
-        return stageAngle;
-    }
-
-    public boolean hasStageAngle() {
-        return stageAngle != null;
     }
 
     public PoseEstimate validatePoseEstimate(PoseEstimate poseEstimate, double deltaSeconds) {

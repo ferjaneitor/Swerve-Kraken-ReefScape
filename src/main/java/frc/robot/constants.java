@@ -361,12 +361,12 @@ public class constants {
         /**
          * Diámetro del sprocket (en pulgadas) que se utiliza en el elevador.
          */
-        public static final double SproketDiameterInches = 2.5;
+        public static final double SproketDiameterInches = 1.6;
 
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.24;
+        public static final double KP = 0.18;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
@@ -409,7 +409,7 @@ public class constants {
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 185;
+        public static final double L4 = 178;
 
         public static final double L3 = 107;
 
@@ -434,7 +434,7 @@ public class constants {
         /**
          * ID del motor principal del intake.
          */
-        public static final int motor1ID = 16;
+        public static final int motor1ID = 7;
 
 
         /**
@@ -496,7 +496,7 @@ public class constants {
          */
         public static final double intakeVelocity = 0.3;
 
-        public static final double AlgaePivotMaxVelocity = 0.5;
+        public static final double AlgaePivotMaxVelocity = 0.2;
 
         public static final double kp = 0.1;
 

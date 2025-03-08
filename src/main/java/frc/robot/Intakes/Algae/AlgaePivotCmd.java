@@ -56,6 +56,7 @@ public class AlgaePivotCmd extends Command {
         ) {
         this.algeaSubSystem = algeaSubSystem;
         this.isInverted = invertDirection;
+        this.yJoystickSupplier = yJoystickSupplier;
         addRequirements(algeaSubSystem);
     
     }

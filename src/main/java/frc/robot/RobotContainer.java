@@ -216,10 +216,10 @@ public class RobotContainer {
         //Aditamentos
         
         //Boton y : Sacamos el Alga
-        AddOnsController.y().whileTrue(new AlgaeEnableIntakeCmd(true, algeaSubSystem));
+        AddOnsController.y().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         
         //Boton x : chupamos el Alga
-        AddOnsController.x().whileTrue(new AlgaeEnableIntakeCmd(false, algeaSubSystem));
+        AddOnsController.x().whileTrue(new AlgaeEnableIntakeCmd(true, algeaSubSystem));
         
         //Boton a : Chupamos el coral
         AddOnsController.a().whileTrue(new CoralContinousInputCmd(true, coralSubSystem));
@@ -240,10 +240,10 @@ public class RobotContainer {
         AddOnsController.povDown().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L2, CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));
         
         //bumper derecho : Se extiende de manera continua el Elevador
-        AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
+        AddOnsController.rightBumper().whileTrue(new ElevatorContinousCmd(true, elevatorSubSystem));
         
         //bumper izquierdo : Se retrae de manera continua el elevador
-        AddOnsController.leftBumper().whileTrue(new ElevatorContinousCmd(true, elevatorSubSystem));
+        AddOnsController.leftBumper().whileTrue(new ElevatorContinousCmd(false, elevatorSubSystem));
         
         //Joystick Derecho Eje Y : Se controla que tanto va a pivotar el mecanismo de la alga
         algeaSubSystem.setDefaultCommand( new AlgaePivotCmd(true, algeaSubSystem, ()-> AddOnsController.getRightY()));
