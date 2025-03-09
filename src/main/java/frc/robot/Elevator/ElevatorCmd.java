@@ -67,12 +67,12 @@ public class ElevatorCmd extends Command {
 
     /**
      * Llamado repetidamente mientras el comando está en ejecución.
-     * Envía la meta en rotaciones al subsistema para que ajuste la altura del elevador,
+     * Envía la meta en centimetros al subsistema para que ajuste la altura del elevador,
      * y posiciona el pivote en el ángulo deseado.
      */
     @Override
     public void execute() {
-        elevatorSubSystem.targetHeightFromRotations(targetMeters);
+        elevatorSubSystem.targetHeightFromCentimeters(targetMeters);
         coralSubSystem.setPivot2Angle(targetAngleDeg);
     }
 

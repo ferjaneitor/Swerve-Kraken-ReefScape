@@ -33,15 +33,20 @@ public class VisionSubsystem extends SubsystemBase{
     private boolean odometryEnabled = true;
     private double lastOdometryTime = 0;
 
-    private double limelightHeartbeat = 0;
+    private double LimeLightUPHeartbeat = 0;
+    private double LimeLightDOWNHeartbeat = 0;
     @SuppressWarnings("unused")
-    private double frontLimelightHeartbeat = 0;
-    private double lastHeartbeatTime = 0;
+    private double frontLimeLightUPHeartbeat = 0;
     @SuppressWarnings("unused")
-    private double frontLastHeartbeatTime = 0;
-    private boolean limelightConnected = false;
+    private double frontLimeLightDOWNHeartbeat = 0;
+    private double lastHeartUPbeatTime = 0;
+    private double lastHeartDOWNbeatTime = 0;
     @SuppressWarnings("unused")
-    private boolean frontLimelightConnected = false;
+    private double frontLastHeartUPbeatTime = 0;
+    private boolean LimeLightUPConnected = false;
+    private boolean LimeLightDOWNConnected = false;
+    @SuppressWarnings("unused")
+    private boolean frontLimeLightUPConnected = false;
 
     public Double distanceOverride = null;
     @SuppressWarnings("unused")
@@ -67,7 +72,7 @@ public class VisionSubsystem extends SubsystemBase{
             }
     public VisionSubsystem() {
         try {
-            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+            aprilTagFieldLayout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2025Reefscape.m_resourceFile);;
         } catch (Exception e) {
             aprilTagFieldLayout = null;
         }
@@ -82,34 +87,61 @@ public class VisionSubsystem extends SubsystemBase{
 
     @Override
     public void periodic() {
+
         if (firstPeriodic) {
-            for (int i = 11; i <= 16; i++) {
-                //log("Trap Poses/" + i, trapPoses.get(i));
-            }
+            
             RobotContainer.drivetrain.addVisionMeasurement(new Pose2d(), Timer.getFPGATimestamp());
             firstPeriodic = false;
+
         }
 
         SmartDashboard.putBoolean("Odometry Enabled", odometryEnabled);     
         
-        double newHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight-up", "hb");
-        if (newHeartbeat > limelightHeartbeat) {
-            limelightConnected = true;
-            limelightHeartbeat = newHeartbeat;
-            lastHeartbeatTime = Timer.getFPGATimestamp();
-        } else if (Timer.getFPGATimestamp() - lastHeartbeatTime >= 1) {
-            limelightConnected = false;
-        }
-        if (Robot.isSimulation()) limelightConnected = true;
+        double newUPHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight-up", "hb");
         
-        SmartDashboard.putBoolean("LimeLight-UP Is Connected", limelightConnected);
+        double newDownHeartbeat = LimelightHelpers.getLimelightNTDouble("limelight-down", "hb");
 
-        if (!limelightConnected) {
+        if (newUPHeartbeat > LimeLightUPHeartbeat) {
+
+            LimeLightUPConnected = true;
+            LimeLightUPHeartbeat = newUPHeartbeat;
+
+
+            lastHeartUPbeatTime = Timer.getFPGATimestamp();
+
+        } else if (Timer.getFPGATimestamp() - lastHeartUPbeatTime >= 1) {
+
+            LimeLightUPConnected = false;
+        }
+
+        if (newDownHeartbeat > LimeLightDOWNHeartbeat) {
+
+            LimeLightDOWNConnected = true;
+            LimeLightDOWNHeartbeat = newDownHeartbeat;
+
+
+            lastHeartDOWNbeatTime = Timer.getFPGATimestamp();
+
+        } else if (Timer.getFPGATimestamp() - lastHeartDOWNbeatTime >= 1) {
+
+            LimeLightDOWNConnected = false;
+        }
+
+        if (Robot.isSimulation()) {
+            LimeLightUPConnected = true;
+            LimeLightDOWNConnected = true;
+        }
+        
+        SmartDashboard.putBoolean("LimeLight-UP Is Connected", LimeLightUPConnected);
+        SmartDashboard.putBoolean("LimeLight-DOWN Is Connected", LimeLightDOWNConnected);
+
+        if (!LimeLightUPConnected && !LimeLightDOWNConnected) {
+
             rawFiducials = emptyFiducials;
             
             return;
-        }
 
+        }
 
         PoseEstimate bestPose;
         PoseEstimate frontPose = validatePoseEstimate(null, 0); // Not using front limelight for odometry yet
@@ -214,8 +246,12 @@ public class VisionSubsystem extends SubsystemBase{
         return biggest;
     }
 
-    public boolean isLimelightConnected() {
-        return limelightConnected;
+    public boolean isLimeLightUPConnected() {
+        return LimeLightUPConnected;
+    }
+    
+    public boolean isLimeLightDOWNConnected() {
+        return LimeLightDOWNConnected;
     }
     
     public void setAllowVisionOdometry(boolean odometryEnabled) {

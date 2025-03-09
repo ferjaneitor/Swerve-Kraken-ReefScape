@@ -43,6 +43,8 @@ public class ElevatorSubSystem extends SubsystemBase {
     // Controlador PID para el primer motor (ElevatorMotor).
     private PIDController ElevatorMotorPidController;
 
+    private PIDController elevatorFeederMotorPidController;
+
     //Se encarga de revisar si ya existe un comando ejecutandose
     private boolean CmdRunning = false ;
 
@@ -56,6 +58,8 @@ public class ElevatorSubSystem extends SubsystemBase {
         this.ElevatorMotorEncoder = ElevatorMotor.getEncoder();
 
         this.ElevatorMotorPidController = new PIDController(ElevatorConstants.KP, ElevatorConstants.KI, ElevatorConstants.KD);
+        
+        this.elevatorFeederMotorPidController = new PIDController(ElevatorConstants.KPFeeder, ElevatorConstants.KIFeeder, ElevatorConstants.KDFeeder);        
         
         // Convierte el diámetro del sprocket de pulgadas a centímetros y lo usa para calcular la circunferencia en metros.
         double SproketDiameterMeters = ElevatorConstants.SproketDiameterInches * 2.54;
@@ -104,12 +108,25 @@ public class ElevatorSubSystem extends SubsystemBase {
      * Calcula las salidas PID de cada motor (el segundo motor se invierte)
      * y establece el voltaje en cada motor.
      *
-     * @param targetMeters Número de rotaciones deseadas (positivo para subir, negativo para bajar).
+     * @param targetMeters Número de centimetros deseadas (positivo para subir, negativo para bajar).
      */
-    public void targetHeightFromRotations(double targetMeters) {
+    public void targetHeightFromCentimeters(double targetMeters) {
         double ElevatorMotorOutput = ElevatorMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), (targetMeters - ElevatorConstants.OffSetMeters));
 
         ElevatorMotor.setVoltage(ElevatorMotorOutput);
+    }
+
+    /**
+     * Ajusta la altura del elevador según las rotaciones objetivo.
+     * Calcula las salidas PID de cada motor (el segundo motor se invierte)
+     * y establece el voltaje en cada motor.
+     *
+     * @param targetMeters Número de centimetros deseadas (positivo para subir, negativo para bajar).
+     */
+    public void targetHeightFeeder() {
+        double ElevatorMotorOutput = ElevatorMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), (ElevatorConstants.FeederHeight - ElevatorConstants.OffSetMeters));
+
+        ElevatorMotor.setVoltage(ElevatorMotorOutput * 0.4);
     }
 
     /**

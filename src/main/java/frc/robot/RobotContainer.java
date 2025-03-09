@@ -22,6 +22,8 @@ import frc.robot.Drive.TunerConstants;
 import frc.robot.Elevator.ElevatorCmd;
 import frc.robot.Elevator.ElevatorCmdAuto;
 import frc.robot.Elevator.ElevatorContinousCmd;
+import frc.robot.Elevator.ElevatorFeederCmd;
+import frc.robot.Elevator.ElevatorFeederCmdAuto;
 import frc.robot.Elevator.ElevatorResetPosition;
 import frc.robot.Elevator.ElevatorSubSystem;
 import frc.robot.Intakes.Algae.AlgaeEnableIntakeCmd;
@@ -150,7 +152,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Elevator to L3", new ElevatorCmdAuto(ElevatorConstants.L3,CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L2", new ElevatorCmdAuto(ElevatorConstants.L2,CoralConstants.angleL2, elevatorSubSystem, coralSubSystem));   
         NamedCommands.registerCommand("Elevator to L1", new ElevatorCmdAuto(ElevatorConstants.L1,CoralConstants.angleL1, elevatorSubSystem, coralSubSystem));   
-        NamedCommands.registerCommand("Feeder Position", new ElevatorCmdAuto(ElevatorConstants.FeederHeight,CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));   
+        NamedCommands.registerCommand("Feeder Position", new ElevatorFeederCmdAuto(elevatorSubSystem, coralSubSystem));   
         
         NamedCommands.registerCommand("Algae In", new AlgaeEnableIntakeCmd(false, algeaSubSystem));
         NamedCommands.registerCommand("Algae Out", new AlgaeEnableIntakeCmd(true, algeaSubSystem));
@@ -230,8 +232,8 @@ public class RobotContainer {
         //pov Arriba : Se extiende el Elevador hasta L4
         AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));
         
-        //pov Izquierda : Se extiende el Elevador hasta L1
-        AddOnsController.povLeft().toggleOnTrue(new ElevatorCmd(ElevatorConstants.FeederHeight, CoralConstants.FeederAngle, elevatorSubSystem, coralSubSystem));
+        //pov Izquierda : Se extiende el Elevador hasta Feeder
+        AddOnsController.povLeft().toggleOnTrue(new ElevatorFeederCmd(elevatorSubSystem, coralSubSystem));
         
         //pov Derecho : Se extiende el Elevador hasta L3
         AddOnsController.povRight().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L3, CoralConstants.angleL3, elevatorSubSystem, coralSubSystem));

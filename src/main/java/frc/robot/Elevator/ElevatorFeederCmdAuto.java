@@ -1,8 +1,9 @@
 package frc.robot.Elevator;
 
+import frc.robot.constants.CoralConstants;
+import frc.robot.constants.ElevatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Intakes.Coral.CoralSubSystem;
-import frc.robot.constants.ElevatorConstants;
 
 /**
  * ElevatorCmd es un comando que controla el comportamiento de un elevador utilizando un ElevatorSubSystem.
@@ -16,20 +17,10 @@ import frc.robot.constants.ElevatorConstants;
  * - Al finalizar, se detienen los motores y se alterna el modo de retracción para la próxima ejecución.
  * 
  * @Autor: Fernando Joel Cruz Briones
- * @Versión: 1.3
+ * @Versión: 1.0
  */
-public class ElevatorCmdAuto extends Command {
 
-    /**
-     * Distancia objetivo en metros a la que se quiere llevar el elevador.
-     */
-    private double targetMeters;
-
-    /**
-     * Ángulo objetivo en grados para el pivote del mecanismo.
-     */
-    private double targetAngleDeg;
-
+public class ElevatorFeederCmdAuto extends Command {
     /**
      * Subsistema de elevador que gestiona la lógica y el hardware.
      */
@@ -43,17 +34,13 @@ public class ElevatorCmdAuto extends Command {
     /**
      * Crea una nueva instancia de ElevatorCmd.
      *
-     * @param DistanceMeters    Distancia objetivo en metros para el elevador.
-     * @param angleDeg          Ángulo objetivo en grados para el pivote.
      * @param elevatorSubSystem Referencia al subsistema del elevador a controlar.
      * @param coralSubSystem    Referencia al subsistema Coral para controlar el pivote.
      */
-    public ElevatorCmdAuto(double DistanceMeters, double angleDeg, ElevatorSubSystem elevatorSubSystem, CoralSubSystem coralSubSystem) {
-        this.targetMeters = DistanceMeters;
+    public ElevatorFeederCmdAuto( ElevatorSubSystem elevatorSubSystem, CoralSubSystem coralSubSystem) {
         this.elevatorSubSystem = elevatorSubSystem;
         elevatorSubSystem.ResetEncoders();
         this.coralSubSystem = coralSubSystem;
-        this.targetAngleDeg = angleDeg;
         addRequirements(elevatorSubSystem);
         addRequirements(coralSubSystem);
     }
@@ -71,8 +58,8 @@ public class ElevatorCmdAuto extends Command {
      */
     @Override
     public void execute() {
-        elevatorSubSystem.targetHeightFromCentimeters(targetMeters);
-        coralSubSystem.setPivot2Angle(targetAngleDeg);
+        elevatorSubSystem.targetHeightFromCentimeters(ElevatorConstants.FeederHeight);
+        coralSubSystem.setPivot2Angle(CoralConstants.FeederAngle);
     }
 
     /**
@@ -97,8 +84,9 @@ public class ElevatorCmdAuto extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Math.abs(elevatorSubSystem.getElevatorMotorPosition() - (targetMeters - ElevatorConstants.OffSetMeters))
+        return Math.abs(elevatorSubSystem.getElevatorMotorPosition() - (ElevatorConstants.FeederHeight - ElevatorConstants.OffSetMeters))
                    < ElevatorConstants.TOLERANCE;
     
     }
+    
 }

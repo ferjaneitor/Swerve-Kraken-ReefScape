@@ -43,9 +43,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Feeder Position"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "right-center-L4_2_park"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Feeder Position"
+                }
+              }
+            ]
           }
         }
       ]

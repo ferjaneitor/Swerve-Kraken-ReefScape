@@ -366,7 +366,7 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.18;
+        public static final double KP = 0.20;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
@@ -397,19 +397,19 @@ public class constants {
         /**
          * Velocidad establecida para el elevador, en caso de uso continuo.
          */
-        public static final double ElevatorVelocity = 0.6;
+        public static final double ElevatorVelocity = 0.3;
 
         /**
          * Relación de engranaje (GearRatio) aplicada al tren de potencia del elevador.
          */
-        public static final double GearRatio = 64;
+        public static final double GearRatio = 25;
 
         /**
          * Número de etapas (stages) del elevador en tipo cascada.
          */
         public static final double ElevatorStages = 3;
 
-        public static final double L4 = 178;
+        public static final double L4 = 181;
 
         public static final double L3 = 107;
 
@@ -422,6 +422,12 @@ public class constants {
         public static final double MAXAcceleration = 0.4;
 
         public static final double FeederHeight = 68;
+
+        public static final double KPFeeder = 0.02;
+
+        public static final double KIFeeder = 0;
+
+        public static final double KDFeeder = 0;
 
     }
 
