@@ -31,6 +31,8 @@ public class ElevatorFeederCmdAuto extends Command {
      */
     private CoralSubSystem coralSubSystem;
 
+    private boolean UseLowPID;
+
     /**
      * Crea una nueva instancia de ElevatorCmd.
      *
@@ -49,6 +51,13 @@ public class ElevatorFeederCmdAuto extends Command {
     public void initialize() {
         // No se realiza acción adicional en initialize.
         elevatorSubSystem.changeRunningCmd(true);
+    
+        if (Math.abs(elevatorSubSystem.getElevatorMotorPosition() ) - ElevatorConstants.FeederHeight > 20) {
+            UseLowPID = true;
+        } else {
+            UseLowPID = false;
+        }
+    
     }
 
     /**
@@ -58,7 +67,17 @@ public class ElevatorFeederCmdAuto extends Command {
      */
     @Override
     public void execute() {
-        elevatorSubSystem.targetHeightFromCentimeters(ElevatorConstants.FeederHeight);
+        
+        if (UseLowPID) {
+            
+            elevatorSubSystem.targetHeightFeeder();
+            
+        } else {
+            
+            elevatorSubSystem.targetHeightFromCentimeters(ElevatorConstants.FeederHeight);
+            
+        }
+        
         coralSubSystem.setPivot2Angle(CoralConstants.FeederAngle);
     }
 

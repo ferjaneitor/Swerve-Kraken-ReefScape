@@ -36,8 +36,8 @@ import frc.robot.Intakes.Coral.CoralSubSystem;
 import frc.robot.LimeLight.VisionSubsystem;
 import frc.robot.constants.CoralConstants;
 import frc.robot.constants.ElevatorConstants;
-import frc.robot.DeepCage.DeepCageCmd;
-import frc.robot.DeepCage.DeepCageSubSystem;
+//import frc.robot.DeepCage.DeepCageCmd;
+//import frc.robot.DeepCage.DeepCageSubSystem;
 import frc.robot.Drive.CommandSwerveDrivetrain;
 
 /**
@@ -119,7 +119,7 @@ public class RobotContainer {
     /**
      * Subsistema principal de la DeepCage
      */
-    private final DeepCageSubSystem deepCageSubSystem = new DeepCageSubSystem();
+    //private final DeepCageSubSystem deepCageSubSystem = new DeepCageSubSystem();
 
     /**
      * Subsistema principal del Elevador
@@ -210,10 +210,10 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
         
         //Bumper Derecho : A las manecillas del reloj se mueve el climber
-        driverController.a().whileTrue(new DeepCageCmd(false, deepCageSubSystem));
+        //driverController.a().whileTrue(new DeepCageCmd(false, deepCageSubSystem));
         
         // Bumper Izquierdo : En contra de las manecillas del reloj se mueve el climber
-        driverController.x().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
+        //driverController.x().whileTrue(new DeepCageCmd(true, deepCageSubSystem));
         
         //Aditamentos
         
@@ -230,7 +230,7 @@ public class RobotContainer {
         AddOnsController.b().whileTrue(new CoralContinousInputCmd(false, coralSubSystem));
         
         //pov Arriba : Se extiende el Elevador hasta L4
-        AddOnsController.povUp().toggleOnTrue(new ElevatorCmd(ElevatorConstants.L4, CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));
+        AddOnsController.povUp().toggleOnTrue(new ElevatorCmdAuto(ElevatorConstants.L4, CoralConstants.angleL4, elevatorSubSystem, coralSubSystem));
         
         //pov Izquierda : Se extiende el Elevador hasta Feeder
         AddOnsController.povLeft().toggleOnTrue(new ElevatorFeederCmd(elevatorSubSystem, coralSubSystem));

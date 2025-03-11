@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase{
 
-    public static final String LimeLight_UP = "P_Sherman_D"; //CAMBIAR NOMBRE
-    public static final String LimeLight_Down = "P_Sherman_U"; //CAMBIAR NOMBRE
+    public static final String LimeLight_UP = "limelight-up"; //CAMBIAR NOMBRE
+    public static final String LimeLight_Down = "limelight-down"; //CAMBIAR NOMBRE
 
     // Adjustable transform for the Limelight pose per-alliance
     @SuppressWarnings("unused")
@@ -55,7 +55,7 @@ public class VisionSubsystem extends SubsystemBase{
     private PoseEstimate lastPoseEstimate = null;
     public Double stageTX = null;
     public Double stageTY = null;
-    private boolean megatag2Enabled = false;
+    private boolean megatag2Enabled = true;
 
     private final RawFiducial[] emptyFiducials = new RawFiducial[0];
     public RawFiducial[] rawFiducials = emptyFiducials;
@@ -144,14 +144,75 @@ public class VisionSubsystem extends SubsystemBase{
         }
 
         PoseEstimate bestPose;
-        PoseEstimate frontPose = validatePoseEstimate(null, 0); // Not using front limelight for odometry yet
         PoseEstimate upPose;
         PoseEstimate downPose;
         PoseEstimate megaTag2Pose = null;
 
         
-        if (megatag2Enabled) {
+        // if (DriverStation.getAlliance().get() == Alliance.Red) {
             
+        //     System.out.printf("Aliance Color Is: ", Alliance.Red);
+            
+        //     if (megatag2Enabled) {
+            
+        //         System.out.println("Meta Tag Enable");
+            
+        //         double megatagDegrees = RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees();
+        //         if (DriverStation.getAlliance().get()==Alliance.Red) megatagDegrees = MathUtil.inputModulus(megatagDegrees + 180, -180, 180);
+        //         LimelightHelpers.SetRobotOrientation(LimeLight_UP, megatagDegrees, 0, 0, 0, 0, 0);
+        //         upPose = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(LimeLight_UP);
+                
+        //         System.out.printf("Up Pose: ",upPose);
+                
+        //         LimelightHelpers.SetRobotOrientation(LimeLight_Down, megatagDegrees, 0, 0, 0, 0, 0);
+        //         downPose = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2(LimeLight_Down);
+                
+        //         System.out.printf("Down Pose: ",downPose);
+                
+        //     } else {
+                
+        //         System.out.println("Meta Tag Not Enable");
+                
+        //         upPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_UP);
+                
+        //         downPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_Down);
+                
+        //     }
+            
+        // } else {
+            
+        //     System.out.printf("Aliance Color Is: ", Alliance.Blue);
+            
+        //     if (megatag2Enabled) {
+            
+        //         System.out.println("Meta Tag Enable");
+            
+        //         double megatagDegrees = RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees();
+        //         if (DriverStation.getAlliance().get()==Alliance.Red) megatagDegrees = MathUtil.inputModulus(megatagDegrees + 180, -180, 180);
+        //         LimelightHelpers.SetRobotOrientation(LimeLight_UP, megatagDegrees, 0, 0, 0, 0, 0);
+        //         upPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLight_UP);
+                
+        //         System.out.printf("Up Pose: ",upPose);  
+                
+        //         LimelightHelpers.SetRobotOrientation(LimeLight_Down, megatagDegrees, 0, 0, 0, 0, 0);
+        //         downPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimeLight_Down);
+                
+        //         System.out.printf("Down Pose: ",downPose);
+                
+        //     } else {
+                
+        //         System.out.println("Meta Tag Not Enable");
+                
+        //         upPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_UP);
+                
+        //         downPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLight_Down);
+                
+        //     }
+            
+        // }
+
+        if (megatag2Enabled) {
+        
             double megatagDegrees = RobotContainer.drivetrain.getState().Pose.getRotation().getDegrees();
             if (DriverStation.getAlliance().get()==Alliance.Red) megatagDegrees = MathUtil.inputModulus(megatagDegrees + 180, -180, 180);
             LimelightHelpers.SetRobotOrientation(LimeLight_UP, megatagDegrees, 0, 0, 0, 0, 0);
@@ -186,7 +247,7 @@ public class VisionSubsystem extends SubsystemBase{
         
         upPose = validatePoseEstimate(upPose, deltaSeconds);
         
-        if (frontPose != null && upPose != null) {
+        if (downPose     != null && upPose != null) {
             bestPose = (downPose.avgTagArea >= upPose.avgTagArea) ? downPose : upPose;
         } else if (downPose != null) {
             bestPose = downPose;

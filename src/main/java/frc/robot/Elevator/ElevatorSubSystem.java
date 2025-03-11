@@ -124,9 +124,9 @@ public class ElevatorSubSystem extends SubsystemBase {
      * @param targetMeters Número de centimetros deseadas (positivo para subir, negativo para bajar).
      */
     public void targetHeightFeeder() {
-        double ElevatorMotorOutput = ElevatorMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), (ElevatorConstants.FeederHeight - ElevatorConstants.OffSetMeters));
+        double ElevatorMotorOutput = elevatorFeederMotorPidController.calculate(ElevatorMotorEncoder.getPosition(), (ElevatorConstants.FeederHeight - ElevatorConstants.OffSetMeters));
 
-        ElevatorMotor.setVoltage(ElevatorMotorOutput * 0.4);
+        ElevatorMotor.setVoltage(ElevatorMotorOutput);
     }
 
     /**

@@ -19,10 +19,10 @@ public class constants {
     /**
      * drivetrainConstants
      *
-     * <p>Clase que reúne diversas constantes utilizadas en la configuración
+     * Clase que reúne diversas constantes utilizadas en la configuración
      * de un tren motriz (drivetrain) Swerve. Incluye valores de PID, 
      * relaciones de engranajes, offsets de encoders, inercia para simulación,
-     * y posiciones físicas de los módulos (ruedas) respecto al centro del robot.</p>
+     * y posiciones físicas de los módulos (ruedas) respecto al centro del robot.
      */
     public static final class drivetrainConstants {
 
@@ -353,8 +353,8 @@ public class constants {
     }    
     
     /**
-     * <p>ElevatorConstants agrupa las constantes asociadas con el subsistema
-     * del elevador (por ejemplo, diámetros de sprocket, PID, IDs de motores, etc.).</p>
+     * ElevatorConstants agrupa las constantes asociadas con el subsistema
+     * del elevador (por ejemplo, diámetros de sprocket, PID, IDs de motores, etc.).
      */
     public static final class ElevatorConstants {
 
@@ -366,12 +366,12 @@ public class constants {
         /**
          * Constante de ganancia proporcional para el PID del elevador.
          */
-        public static final double KP = 0.20;
+        public static final double KP = 0.22;
 
         /**
          * Constante de ganancia integral para el PID del elevador.
          */
-        public static final double KI = 0.05;
+        public static final double KI = 0.18;
 
         /**
          * Constante de ganancia derivativa para el PID del elevador.
@@ -421,19 +421,19 @@ public class constants {
 
         public static final double MAXAcceleration = 0.4;
 
-        public static final double FeederHeight = 68;
+        public static final double FeederHeight = 68.5;
 
-        public static final double KPFeeder = 0.02;
+        public static final double KPFeeder = 0.08;
 
-        public static final double KIFeeder = 0;
+        public static final double KIFeeder = 0.0;
 
-        public static final double KDFeeder = 0;
+        public static final double KDFeeder = 0.01;
 
     }
 
     /**
-     * <p>CoralConstants agrupa las constantes asociadas con el subsistema "Coral",
-     * que podría incluir uno o dos motores de intake y un motor de pivote.</p>
+     * CoralConstants agrupa las constantes asociadas con el subsistema "Coral",
+     * que podría incluir uno o dos motores de intake y un motor de pivote.
      */
     public static final class CoralConstants {
 
@@ -482,8 +482,8 @@ public class constants {
     }
 
     /**
-     * <p>AlgaeConstants agrupa las constantes asociadas con el subsistema "Algae",
-     * que incluye motores para el intake y posiblemente un pivote.</p>
+     * AlgaeConstants agrupa las constantes asociadas con el subsistema "Algae",
+     * que incluye motores para el intake y posiblemente un pivote.
      */
     public static final class AlgaeConstants {
 
@@ -514,8 +514,8 @@ public class constants {
     }
 
     /**
-     * <p>DeepCageConstants agrupa las constantes asociadas con el subsistema "DeepCage",
-     * que podría utilizar dos motores y una velocidad configurada.</p>
+     * DeepCageConstants agrupa las constantes asociadas con el subsistema "DeepCage",
+     * que podría utilizar dos motores y una velocidad configurada.
      */
     public static final class DeepCageConstants {
 
