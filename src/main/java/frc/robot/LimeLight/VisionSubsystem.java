@@ -10,15 +10,21 @@ import frc.robot.utils.LimelightHelpers.RawFiducial;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class VisionSubsystem extends SubsystemBase{
+
+    Matrix<N3, N1> stateStdDevs = VecBuilder.fill(0.9, 0.9, 1e6); // x, y, theta
 
     public static final String LimeLight_UP = "limelight-up"; //CAMBIAR NOMBRE
     public static final String LimeLight_Down = "limelight-down"; //CAMBIAR NOMBRE
@@ -90,7 +96,7 @@ public class VisionSubsystem extends SubsystemBase{
 
         if (firstPeriodic) {
             
-            RobotContainer.drivetrain.addVisionMeasurement(new Pose2d(), Timer.getFPGATimestamp());
+            RobotContainer.drivetrain.addVisionMeasurement(new Pose2d(), Timer.getFPGATimestamp(), stateStdDevs);
             firstPeriodic = false;
 
         }
@@ -259,7 +265,7 @@ public class VisionSubsystem extends SubsystemBase{
             lastOdometryTime = Timer.getFPGATimestamp();
             lastPoseEstimate = bestPose;
             if (odometryEnabled) {
-                RobotContainer.drivetrain.addVisionMeasurement(bestPose.pose, bestPose.timestampSeconds);
+                RobotContainer.drivetrain.addVisionMeasurement(bestPose.pose, bestPose.timestampSeconds, stateStdDevs);
             }
         }
 

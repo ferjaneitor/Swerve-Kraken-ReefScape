@@ -286,7 +286,7 @@ public class constants {
         /**
          * Offset (rotaciones) para el CANCoder de la rueda trasera izquierda.
          */
-        public static final Angle kBackLeftEncoderOffset = Rotations.of(-0.220947265625);
+        public static final Angle kBackLeftEncoderOffset = Rotations.of(0.072754);
     
         /**
          * Indica si el motor de dirección (steer) de la rueda trasera izquierda está invertido.
